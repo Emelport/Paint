@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Paint++</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <!-- MODO SELECCIONADO -->
+            <p id="modoActual"> </p>
+        </div>
+        <!-- Barra de herramientas -->
+        <div class="toolbox">
+            <!-- Lapicito -->
+            <div class="tool" id="grid">
+                <img src="img/grid.png" onclick="activarGrid()" alt="Lapiz">
+            </div>
+
+
+            <div class="tool" id="pencil">
+                <img src="img/pencil.png" onclick="cambiarModo('lapiz')" alt="Lapiz">
+            </div>
+            <!-- Goma -->
+            <div class="tool" id="eraser">
+                <img src="img/eraser.png" onclick="cambiarModo('borrar')"  alt="Goma">
+            </div>
+
+            <!-- Line -->
+            <div class="tool" id="line">
+                <img src="img/line.png" onclick="cambiarModo('linea')" alt="Linea">
+            </div>
+        </div>
+        <!-- Canvas -->
+        <canvas id="myCanvas" class="canvas"></canvas>
+    </div>
+    
+    <!-- Importar main.js -->
+    <script src="main.js"></script>
+</body>
+</html>
