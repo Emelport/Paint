@@ -10,6 +10,7 @@
         <div class="title">
             <!-- MODO SELECCIONADO -->
             <p id="modoActual"> </p>
+            <p id="colorActual"> </p>
         </div>
         <!-- Barra de herramientas -->
         <div class="toolbox">
@@ -17,8 +18,6 @@
             <div class="tool" id="grid">
                 <img src="img/grid.png" onclick="activarGrid()" alt="Lapiz">
             </div>
-
-
             <div class="tool" id="pencil">
                 <img src="img/pencil.png" onclick="cambiarModo('lapiz')" alt="Lapiz">
             </div>
@@ -26,10 +25,20 @@
             <div class="tool" id="eraser">
                 <img src="img/eraser.png" onclick="cambiarModo('borrar')"  alt="Goma">
             </div>
-
+              <!-- Goma -->
+              <div class="tool" id="eraser">
+                <img src="img/sqaure.png" onclick="cambiarModo('cuadrado')"  alt="cuadrado">
+            </div>
             <!-- Line -->
             <div class="tool" id="line">
                 <img src="img/line.png" onclick="cambiarModo('linea')" alt="Linea">
+            </div>
+            <!-- Colores -->
+            <div class="colorTool">
+                <input type="color" id="colorPicker" onchange="cambiarColor(this.value)">
+            </div>
+            <div class="grosorTool">
+                <input class="range" type="range" id="grosor" min="1" max="10" value="1" onchange="cambiarGrosor(this.value)">
             </div>
         </div>
         <!-- Canvas -->
