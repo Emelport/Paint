@@ -1,6 +1,7 @@
 var modo = "";
 var color = "#000000";
 var grosor = 1;
+var drawing = false;
 
 var modos = ["linea", "lapiz", "borrar","cuadrado"];
 var gridEnabled = false;
@@ -68,18 +69,31 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
+    //evento click y arrastrar
     canvas.addEventListener("mousemove", function (event) {
-        if (gridEnabled && modos.includes(modo)) {
+        if (drawing) {
             var coordenadas = obtenerCoordenadas(event);
-
             if (modo === "lapiz") {
-                ctx.lineTo(coordenadas.x, coordenadas.y);
-                ctx.stroke();
+               drawPixel(coordenadas.x, coordenadas.y);
+
             } else if (modo === "borrar") {
-                ctx.clearRect(coordenadas.x - 5, coordenadas.y - 5, 30, 30);
+                for (var i = 0; i < grosor; i++) {
+                    for (var j = 0; j < grosor; j++) {
+                        ctx.clearRect(coordenadas.x, coordenadas.y, grosor, grosor);
+                    }
+                }
+            } else if( modo === "cuadrado" ){
+                
+
             }
         }
     });
+
+
+    canvas.addEventListener("mouseup", function (event) {
+       drawing = false;
+    });
+
 
     canvas.addEventListener("mousedown", function (event) {
         if (modo === "linea") {
@@ -102,11 +116,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 endPoint = null;
             }
 
-        } else if (gridEnabled && modos.includes(modo)) {
+        } else if (modos.includes(modo)) {
             if (modo === "lapiz" || modo === "borrar") {
                 ctx.beginPath();
                 var coordenadas = obtenerCoordenadas(event);
                 ctx.moveTo(coordenadas.x, coordenadas.y);
+                drawing = true;
             }
         }
     });
@@ -115,60 +130,22 @@ document.addEventListener("DOMContentLoaded", function () {
     function drawLine(start, end) {
         // Algoritmo de Bresenham
         //Calcular la distancia entre los dos puntos
-        var dx = Math.abs(end.x - start.x);
-        var dy = Math.abs(end.y - start.y);
+        var dx = Math.abs(end.x - start.x); //Δx = |x2 - x1|
+        var dy = Math.abs(end.y - start.y); //Δy = |y2 - y1|
         
-        var sx = (start.x < end.x) ? 1 : -1; // 1 si es positivo, -1 si es negativo
-        var sy = (start.y < end.y) ? 1 : -1;
-        //Calcular el error
-        var err = dx - dy;
+        //Calcular el punto medio
+        var pk = (2*dy) - dx; //e = 2Δy - Δx
 
-        while (true) {
-            //Dependiendo del grosor dibujar mas pixeles alrederor del punto
-            for (var i = 0; i < grosor; i++) {
-                for (var j = 0; j < grosor; j++) {
-                    ctx.fillStyle = color;
-                    ctx.fillRect(start.x + i, start.y + j, 1, 1);
-                }
-            }
-
-            if ((start.x === end.x) && (start.y === end.y)) {
-                break;
-            }
-
-            var e2 = 2 * err;
-
-
-            if (e2 > -dy) {
-                err -= dy;
-                start.x += sx;
-            }
-
-            if (e2 < dx) {
-                err += dx;
-                start.y += sy;
-            }
-        }
-    }
-    
-    //y = mx + b
-    function drawLine2(start, end) {
-        // Ecuacion de la recta y = mx + b
-        var m = (end.y - start.y) / (end.x - start.x); // Pendiente
-        var b = start.y - m * start.x; // Ordenada en el origen
-
-        //Intercambiar los puntos para que siempre se dibuje de izquierda a derecha
-        if (start.x > end.x) {
-            var temp = start;
-            start = end;
-            end = temp;
-        }
-
-        //Coordenada inicial
+        /*
+            En cada xk,a lo largo de la línea, que inicia en k=0, se efectúa la prueba siguiente: 
+            si pk <0, el siguiente punto que se debe trazar es (xk +1, yk) y  pk +1 = pk + 2Δy. 
+            De otro modo, el siguiente punto que se debe trazar es (xk +1, yk+1) y pk +1 = pk + 2Δy - 2Δx
+            
+        */ 
         var x = start.x;
         var y = start.y;
 
-        while (x <= end.x) {
+        while (x != end.x) {
             //Dependiendo del grosor dibujar mas pixeles alrederor del punto 
             for (var i = 0; i < grosor; i++) {
                 for (var j = 0; j < grosor; j++) {
@@ -176,15 +153,73 @@ document.addEventListener("DOMContentLoaded", function () {
                     ctx.fillRect(x + i, y + j, 1, 1);
                 }
             }
-            x++;
-            y = Math.round(m * x + b);
-            ctx.fillRect(x, y, 1, 1);
-        }
 
-        //Pintar el punto final
-        ctx.fillStyle = color;
-        ctx.fillRect(end.x, end.y, 1, 1);
+            var sx = (start.x < end.x) ? 1 : -1; // si el punto inicial es menor que el punto final entonces sx = 1, de lo contrario sx = -1
+            var sy = (start.y < end.y) ? 1 : -1; // si el punto inicial es menor que el punto final entonces sy = 1, de lo contrario sy = -1
+            
+            x += sx;
+            if (pk < 0) {
+                pk = pk + 2 * dy;
+            } else {
+                y += sy;
+                pk = pk + 2 * dy - 2 * dx;
+            }
+        }
     }
+// y = mx + b
+function drawLine2(start, end) {
+    // Ecuacion de la recta y = mx + b
+
+    var dx = end.x - start.x;        // Delta x
+    var dy = end.y - start.y;        // Delta y
+
+    // Pendiente
+    var m = dy / dx;
+    var b = start.y - m * start.x;   // Ordenada en el origen
+
+    // Intercambiar los puntos para que siempre se dibuje de izquierda a derecha
+    if (start.x > end.x) {
+        var temp = start;
+        start = end;
+        end = temp;
+    }
+
+    // Coordenada inicial
+    var x = start.x;
+    var y = start.y;
+
+    // Determinar el cuadrante
+    var xIncrement, yIncrement;
+
+    if (Math.abs(m) <= 1) {
+        xIncrement = 1;
+        yIncrement = m;
+    } else {
+        xIncrement = 1 / Math.abs(m);
+        yIncrement = m < 0 ? -1 : 1;
+    }
+
+    //Dibujar los puntos intermedios
+    while (x <= end.x) {
+        drawPixel(Math.round(x), Math.round(y));
+        x += xIncrement;
+        y += yIncrement;
+    }
+
+    // Pintar el punto final
+    drawPixel(end.x, end.y);
+}
+
+    // Dependiendo del grosor, dibujar más píxeles alrededor del punto 
+    function drawPixel(x, y) {
+        for (var i = 0; i < grosor; i++) {
+            for (var j = 0; j < grosor; j++) {
+                ctx.fillStyle = color;
+                ctx.fillRect(x , y, 1, 1);
+            }
+        }
+    }
+
 
    
     // DIGITAL DIFFERENTIAL ANALYZER
@@ -222,21 +257,27 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function drawCuadrado(start,end){
-        // Recibe los puntos de la esquina superior izquierda y la esquina inferior derecha
-        var x = start.x;
-        var y = start.y;
-        
-        // Calcular los pixeles de ancho y alto 
-        var width = end.x - start.x;
-        var height = end.y - start.y;
-
-        // Dependiendo del grosor, dibujar más píxeles alrededor del punto
-        for (var i = 0; i < grosor; i++) {
-            for (var j = 0; j < grosor; j++) {
-                ctx.fillStyle = color;
-                ctx.fillRect(x + i, y + j, width, height);
-            }
-        }
+    function drawCuadrado(start, end) {
+        // Calcular el ancho y alto del cuadrado
+        var width = Math.abs(end.x - start.x);
+        var height = Math.abs(end.y - start.y);
+    
+        // Determinar el punto de inicio y el punto final para el cuadrado
+        var cuadradoStart = {
+            x: (end.x > start.x) ? start.x : end.x,
+            y: (end.y > start.y) ? start.y : end.y
+        };
+    
+        var cuadradoEnd = {
+            x: cuadradoStart.x + Math.min(width, height),
+            y: cuadradoStart.y + Math.min(width, height)
+        };
+    
+        // Dibujar el contorno del cuadrado
+        drawLineDDA(cuadradoStart, { x: cuadradoEnd.x, y: cuadradoStart.y });
+        drawLineDDA({ x: cuadradoEnd.x, y: cuadradoStart.y }, cuadradoEnd);
+        drawLineDDA(cuadradoEnd, { x: cuadradoStart.x, y: cuadradoEnd.y });
+        drawLineDDA({ x: cuadradoStart.x, y: cuadradoEnd.y }, cuadradoStart);
     }
+    
 });
