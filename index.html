@@ -4,48 +4,76 @@
     <meta charset="UTF-8">
     <title>Paint++</title>
     <link rel="stylesheet" href="styles.css">
+        
+    <!-- Importar main.js -->
+    <script type="module" src="main.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="title">
             <!-- MODO SELECCIONADO -->
-            <p id="modoActual"> </p>
-            <p id="colorActual"> </p>
+            <p id="modoActual">
+                <p id="colorActual"></p>
+            </p>
+            
         </div>
         <!-- Barra de herramientas -->
         <div class="toolbox">
             <!-- Lapicito -->
-            <div class="tool" id="grid">
-                <img src="img/grid.png" onclick="activarGrid()" alt="Lapiz">
+            <div class="tool">
+                <img  id="grid" src="img/grid.png" >
             </div>
-            <div class="tool" id="pencil">
-                <img src="img/pencil.png" onclick="cambiarModo('lapiz')" alt="Lapiz">
+            <div class="tool">
+                <img  id="pencil" src="img/pencil.png" >
             </div>
             <!-- Goma -->
-            <div class="tool" id="eraser">
-                <img src="img/eraser.png" onclick="cambiarModo('borrar')"  alt="Goma">
+            <div class="tool" >
+                <img id="eraser" src="img/eraser.png" >
             </div>
-              <!-- Goma -->
-              <div class="tool" id="eraser">
-                <img src="img/sqaure.png" onclick="cambiarModo('cuadrado')"  alt="cuadrado">
+            <!-- Cuadrado -->
+            <div class="tool" >
+                <img id="square" src="img/square.png" >
             </div>
             <!-- Line -->
-            <div class="tool" id="line">
-                <img src="img/line.png" onclick="cambiarModo('linea')" alt="Linea">
+            <div class="tool" >
+                <img id="line" src="img/line.png" >
             </div>
             <!-- Colores -->
             <div class="colorTool">
-                <input type="color" id="colorPicker" onchange="cambiarColor(this.value)">
+                <input type="color" id="colorPicker" >
             </div>
             <div class="grosorTool">
-                <input class="range" type="range" id="grosor" min="1" max="10" value="1" onchange="cambiarGrosor(this.value)">
+                <input id="grosor" class="range" type="range" id="grosor" min="1" max="10" value="1">
+            </div>
+              <!-- Selector de canvas -->
+            <div class="canvasSelector">
+                <div class="canvasSelectorItem">
+                    <p>Capa 1</p>
+                    <input type="radio" name="canvasSelector" id="layer1" checked>
+                </div>
+                <div class="canvasSelectorItem">
+                    <p>Capa 2</p>
+                    <input type="radio" name="canvasSelector" id="layer2">
+                </div>
+                <div class="canvasSelectorItem">
+                    <p>Capa 3</p>
+                    <input type="radio" name="canvasSelector" id="layer3">
+                </div>
             </div>
         </div>
-        <!-- Canvas -->
-        <canvas id="myCanvas" class="canvas"></canvas>
-    </div>
     
-    <!-- Importar main.js -->
-    <script src="main.js"></script>
+
+        <!-- Contenedor de capas -->
+        <div class="canvas-container">
+            <!-- Capa para el grid -->
+            <canvas id="gridCanvas" class="canvas"></canvas>
+            <!-- Actualiza la función de dibujo para todas las capas -->
+            <canvas id="layer1Canvas" class="canvas" ></canvas>
+            <canvas id="layer2Canvas" class="canvas"></canvas>
+            <canvas id="layer3Canvas" class="canvas" ></canvas>
+        </div>
+         
+    </div>
+
 </body>
 </html>
