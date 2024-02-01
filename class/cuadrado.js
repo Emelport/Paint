@@ -11,17 +11,15 @@ class Cuadrado extends Figura {
         //Objeto Linea
         this.linea = new Linea(ctx, color, grosor);
     }
-
     // Dibujar el cuadrado
     draw() {
         this.drawOutline(this.start, this.end);
     }
-
     // Dibujar el contorno del cuadrado
     drawOutline(start,end) {
 
         console.log("Dibujando Cuadrado");
-        //cpprdemadas
+        //cordenadas
         console.log(start.x + "," + start.y);
         console.log(end.x + "," + end.y);
 

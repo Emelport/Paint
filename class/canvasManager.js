@@ -1,6 +1,7 @@
 import {Figura} from "../class/figuras.js";
 import {Linea} from "../class/linea.js";
 import {Cuadrado} from "../class/cuadrado.js";
+import {Circulo} from "../class/circulo.js";
 
 class CanvasManager {
     constructor() {
@@ -26,7 +27,6 @@ class CanvasManager {
     }
 
 
-
     setupCanvas() {
 
         //Tamano de los canvas
@@ -45,13 +45,11 @@ class CanvasManager {
         //Ocultar el grid por defecto
         document.getElementById("gridCanvas").style.display = "none";
     }
-
     setupListeners() {
        //MouseDown
         document.addEventListener("mousedown", this.mouseDown);
 
     }
-
     setCurrentCanvas(canvasId) {
         // Establece el canvas actual en función del ID proporcionado
         this.currentCanvas = document.getElementById(canvasId);
@@ -72,7 +70,6 @@ class CanvasManager {
 
         console.log(this.currentCanvas);
     }
-
     setDrawing(newDrawing) {
         // Establece el estado del dibujo
         this.drawing = newDrawing;
@@ -85,11 +82,9 @@ class CanvasManager {
     setModo(newModo){
         this.modo = newModo;
     }
-
     getCurrentModo(){
         return this.modo;
     }
-
     getGridEnabled() {
         // Devuelve el estado del grid
         return this.gridEnabled;
@@ -98,12 +93,10 @@ class CanvasManager {
         // Devuelve el canvas actual
         return this.currentCanvas;
     }
-
     getDrawing() {
         // Devuelve el estado del dibujo
         return this.drawing;
     }
-
     getRelativeCoordinates(event) {
         // Obtiene las coordenadas relativas del evento en el canvas actual
         if (this.currentCanvas) {
@@ -124,39 +117,33 @@ class CanvasManager {
         //Obtener el context del canvas actual
         return this.currentCanvas.getContext("2d");
     }
-
     cambiarModo(newModo) {
         this.modo = newModo;
         console.log(this.modo);
         // Otras acciones relacionadas con cambiar el modo
     }
-
     cambiarColor(newColor) {
         this.color = newColor;
         console.log(this.color + " color");
         // Configurar el color cada vez que cambias el color
         // ...
     }
-
     cambiarGrosor(newGrosor) {
         this.grosor = newGrosor;
         console.log(this.grosor);
         // Configurar el grosor cada vez que cambias el grosor
         // ...
     }
-
     activarGrid() {
         this.gridEnabled = !this.gridEnabled;
         this.drawGrid();
         console.log(this.gridEnabled);
         // Otras acciones relacionadas con activar o desactivar el grid
     }
-
     drawGrid() {
         // Implementar lógica para dibujar el grid
         // ...
     }
-
     drawLine(start, end) {
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
@@ -165,7 +152,6 @@ class CanvasManager {
         // Llamar al método draw de la instancia Linea
         linea.draw(start, end);
     }
-
     drawSquare(start, end) {
 
         // Obtener el contexto del canvas actual
@@ -175,7 +161,12 @@ class CanvasManager {
         // Llamar al método draw de la instancia Linea
         cuadrado.draw();
     }
-
+    drawCircle(start,end){
+        // Obtener el contexto del canvas actual
+        const ctx = this.getCurrentCanvasContext();
+        const circulo = new Circulo(ctx, this.color, this.grosor, start, end);
+        circulo.draw();
+    }
     cleanLine(start, end) {
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();

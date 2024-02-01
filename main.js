@@ -22,6 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("square").onclick = function () {
         canvasManager.cambiarModo('cuadrado');
     };
+    document.getElementById("circle").onclick = function () {
+        canvasManager.cambiarModo('circulo');
+    };
     document.getElementById("eraser").onclick = function () {
         canvasManager.cambiarModo('borrar');
     };
@@ -72,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (canvasManager.getDrawing()) {
             // Actualiza el punto final mientras se arrastra el ratón
             endPoint = canvasManager.getRelativeCoordinates(event);
-
+            console.log(endPoint)
             // Borra el canvas y vuelve a dibujar la línea actualizada
             ctx = canvasManager.getCurrentCanvasContext()
             if(canvasManager.getCurrentModo() === 'linea'){
@@ -92,6 +95,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 canvasManager.drawPixel(endPoint);
             }
+            else if (canvasManager.getCurrentModo() === 'circulo'){
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                canvasManager.drawCircle(startPoint, endPoint);
+            }
 
         }
     });
@@ -106,7 +113,6 @@ document.addEventListener("DOMContentLoaded", function () {
         ctx = canvasManager.getCurrentCanvasContext()
         if(canvasManager.getCurrentModo() === 'linea'){
             //limpiar el canvas solo entre los puntos de la linea
-
             canvasManager.drawLine(startPoint, endPoint);
         }
 
