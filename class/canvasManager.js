@@ -2,6 +2,7 @@ import {Figura} from "../class/figuras.js";
 import {Linea} from "../class/linea.js";
 import {Cuadrado} from "../class/cuadrado.js";
 import {Circulo} from "../class/circulo.js";
+import {Poligonos} from "../class/poligonos.js";   
 
 class CanvasManager {
     constructor() {
@@ -23,6 +24,7 @@ class CanvasManager {
         this.setupCanvas();
         this.setupListeners();
 
+        this.ladospoligono = 0;
 
     }
 
@@ -79,6 +81,10 @@ class CanvasManager {
         console.log(newGridEnabled);
         this.gridEnabled = newGridEnabled;
     }
+    setLadosPoligono(newLados){
+        this.ladospoligono = newLados;
+        console.log(this.ladospoligono);
+    }
     setModo(newModo){
         this.modo = newModo;
     }
@@ -116,6 +122,9 @@ class CanvasManager {
     getCurrentCanvasContext() {
         //Obtener el context del canvas actual
         return this.currentCanvas.getContext("2d");
+    }
+    getCurrentLadospoligono(){
+        return this.ladospoligono;
     }
     cambiarModo(newModo) {
         this.modo = newModo;
@@ -167,6 +176,14 @@ class CanvasManager {
         const circulo = new Circulo(ctx, this.color, this.grosor, start, end);
         circulo.draw();
     }
+    drawPolygon(start,end){
+        // Obtener el contexto del canvas actual
+        const ctx = this.getCurrentCanvasContext();
+        const line = this.getCurrentLadospoligono();
+        const poligonos = new Poligonos(ctx, this.color, this.grosor, start, end, line);
+        poligonos.draw();
+    }
+
     cleanLine(start, end) {
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
@@ -175,6 +192,7 @@ class CanvasManager {
         // Llamar al método draw de la instancia Linea
         linea.cleanLine(start, end);
     }
+
 }
 
 // Exportar la clase

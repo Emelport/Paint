@@ -31,9 +31,15 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("pencil").onclick = function () {
         canvasManager.cambiarModo('lapiz');
     };
+    document.getElementById("polygon").onclick = function () {
+        canvasManager.cambiarModo('poligono');
+        //Salga un selector de numeros y dependiendo del numero seleciconado ejecutar setLadosPoligono
+        var lados = prompt("Ingrese el numero de lados del poligono");
+        canvasManager.setLadosPoligono(lados);
+    };
     document.getElementById("colorPicker").onchange = function () {
         canvasManager.cambiarColor(this.value);
-    };
+    };      
     document.getElementById("grosor").onchange = function () {
         canvasManager.cambiarGrosor(this.value);
     };
@@ -96,8 +102,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 canvasManager.drawPixel(endPoint);
             }
             else if (canvasManager.getCurrentModo() === 'circulo'){
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 canvasManager.drawCircle(startPoint, endPoint);
+            }
+            else if (canvasManager.getCurrentModo() === 'polygon'){
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                canvasManager.drawPolygon(startPoint, endPoint);
             }
 
         }
