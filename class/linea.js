@@ -11,7 +11,7 @@ class Linea extends Figura{
 
     draw() {
         // Implementar en las clases hijas
-        console.log("Dibujando Linea");
+        // console.log("Dibujando Linea");
         this.drawDDA(this.start, this.end);
     }
     // Dibujar la línea

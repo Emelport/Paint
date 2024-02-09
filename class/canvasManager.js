@@ -3,6 +3,7 @@ import {Linea} from "../class/linea.js";
 import {Cuadrado} from "../class/cuadrado.js";
 import {Circulo} from "../class/circulo.js";
 import {Poligonos} from "../class/poligonos.js";   
+import {Elipse} from "../class/elipse.js";
 
 class CanvasManager {
     constructor() {
@@ -180,8 +181,16 @@ class CanvasManager {
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
         const line = this.getCurrentLadospoligono();
+        // console.log(ctx, this.color, this.grosor, start, end, line)
         const poligonos = new Poligonos(ctx, this.color, this.grosor, start, end, line);
         poligonos.draw();
+    }
+    drawElips(start,end){
+        // Obtener el contexto del canvas actual
+        const ctx = this.getCurrentCanvasContext();
+        const elipse = new Elipse(ctx, this.color, this.grosor, start, end);
+        elipse.draw();
+    
     }
 
     cleanLine(start, end) {

@@ -37,6 +37,10 @@ document.addEventListener("DOMContentLoaded", function () {
         var lados = prompt("Ingrese el numero de lados del poligono");
         canvasManager.setLadosPoligono(lados);
     };
+    document.getElementById("elipse").onclick = function () {
+        canvasManager.cambiarModo('elipse');
+    }
+
     document.getElementById("colorPicker").onchange = function () {
         canvasManager.cambiarColor(this.value);
     };      
@@ -105,9 +109,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 canvasManager.drawCircle(startPoint, endPoint);
             }
-            else if (canvasManager.getCurrentModo() === 'polygon'){
+            else if (canvasManager.getCurrentModo() === 'poligono'){
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 canvasManager.drawPolygon(startPoint, endPoint);
+            }
+            else if (canvasManager.getCurrentModo() === 'elipse'){
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                canvasManager.drawElips(startPoint, endPoint);
             }
 
         }
@@ -115,17 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Agrega event listener para el evento de mouseup
     canvasManager.getCurrentCanvas().addEventListener("mouseup", function () {
         console.log("mouseup");
-        console.log(canvasManager.getDrawing());
         canvasManager.setDrawing(false);
-
-        endPoint = canvasManager.getRelativeCoordinates(event);
-
-        ctx = canvasManager.getCurrentCanvasContext()
-        if(canvasManager.getCurrentModo() === 'linea'){
-            //limpiar el canvas solo entre los puntos de la linea
-            canvasManager.drawLine(startPoint, endPoint);
-        }
-
     });
 
     // Agrega event listener para el evento de mouseout

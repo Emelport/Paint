@@ -1,12 +1,13 @@
-import { Figura } from "./figuras.js";
 import { Linea } from './linea.js';
+import {Figura} from "../class/figuras.js";
 
 class Poligonos extends Figura {
     constructor(ctx, color, grosor, start, end, lados) {
         super(ctx, color, grosor);
         this.start = start; // Centro
         this.end = end; // Punto final del apotema
-        this.lados = lados; // Lados del poligono
+        //Convertir a numeros los "lados" del poligono
+        this.lados = parseInt(lados);
     }
 
     draw() {
@@ -14,7 +15,6 @@ class Poligonos extends Figura {
             console.error("El contexto del canvas no es válido.");
             return;
         }
-
         if (
             typeof this.start.x !== "number" ||
             typeof this.start.y !== "number" ||
@@ -22,7 +22,8 @@ class Poligonos extends Figura {
             typeof this.end.y !== "number" ||
             typeof this.lados !== "number"
         ) {
-            console.error("Las coordenadas y el número de lados deben ser números.");
+            // console.error("Las coordenadas y el número de lados deben ser números.");
+            // console.log(this.start.x, this.start.y, this.end.x, this.end.y, this.lados)
             return;
         }
 
@@ -33,6 +34,7 @@ class Poligonos extends Figura {
     }
 
     drawPoligono(center, apotema, lados) {
+        // console.log("imprimiendo Poligono")
         // Calcular el radio
         const radius = Math.sqrt(
             Math.pow(apotema.x - center.x, 2) +
@@ -57,7 +59,6 @@ class Poligonos extends Figura {
             const linea = new Linea(this.ctx, this.color, this.grosor, start, end);
             linea.draw();
         }
-
     }
 }
 
