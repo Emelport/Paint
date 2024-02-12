@@ -57,8 +57,12 @@ class Poligonos extends Figura {
             const start = vertices[i];
             const end = vertices[(i + 1) % lados];
             const linea = new Linea(this.ctx, this.color, this.grosor, start, end);
-            linea.draw();
+            const puntos_linea=linea.draw();
+            this.puntos.push(puntos_linea);
         }
+
+        console.log(this.puntos);
+       
     }
 }
 

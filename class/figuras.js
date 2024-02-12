@@ -5,6 +5,8 @@ class Figura {
         this.ctx = ctx;
         this.color = color;
         this.grosor = grosor;
+        //Arreglo de puntos
+        this.puntos = [];
     }
 
     // Dibujar la figura

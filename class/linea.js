@@ -12,7 +12,7 @@ class Linea extends Figura{
     draw() {
         // Implementar en las clases hijas
         // console.log("Dibujando Linea");
-        this.drawDDA(this.start, this.end);
+        return this.drawDDA(this.start, this.end);
     }
     // Dibujar la línea
     // DIGITAL DIFFERENTIAL ANALYZER
@@ -38,10 +38,14 @@ class Linea extends Figura{
 
             // Dependiendo del grosor, dibujar más píxeles alrededor del punto
             this.drawPixel(roundedX, roundedY);
+            //Guardar los puntos
+            this.puntos.push({x: roundedX, y: roundedY});
             // Actualizar las coordenadas con el incremento
             x += xIncrement;
             y += yIncrement;
         }
+
+        return this.puntos;
     }
 
     // Formula General de la Recta y = mx + b

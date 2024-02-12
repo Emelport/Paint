@@ -71,18 +71,12 @@ document.addEventListener("DOMContentLoaded", function () {
     //***********************EVENTOS***********************/
     // Agrega un event listener para el evento de clic en el canvas
     canvasManager.getCurrentCanvas().addEventListener("mousedown", function (event) {
-        console.log("mousedown");
         ctx = canvasManager.getCurrentCanvasContext()
-   
 
         // Configurar el estado de dibujo y el punto de inicio
         canvasManager.setDrawing(true);
         startPoint = canvasManager.getRelativeCoordinates(event);
 
-        console.log(startPoint);
-        console.log(canvasManager.getDrawing());
-
-         
         if(canvasManager.getCurrentModo() === 'cubeta'){
             canvasManager.fillCubeta(startPoint);
         }
@@ -93,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (canvasManager.getDrawing()) {
             // Actualiza el punto final mientras se arrastra el ratón
             endPoint = canvasManager.getRelativeCoordinates(event);
-            console.log(endPoint)
+            // console.log(endPoint)
             // Borra el canvas y vuelve a dibujar la línea actualizada
             ctx = canvasManager.getCurrentCanvasContext()
             if(canvasManager.getCurrentModo() === 'linea'){
@@ -130,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     // Agrega event listener para el evento de mouseup
     canvasManager.getCurrentCanvas().addEventListener("mouseup", function () {
-        console.log("mouseup");
+        // console.log("mouseup");
         canvasManager.setDrawing(false);
     });
 
