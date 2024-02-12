@@ -8,10 +8,10 @@ import {Elipse} from "../class/elipse.js";
 class CanvasManager {
     constructor() {
         // Obtener contextos de las capas
-        this.gridCtx = document.getElementById("gridCanvas").getContext("2d");
-        this.layer1Ctx = document.getElementById("layer1Canvas").getContext("2d");
-        this.layer2Ctx = document.getElementById("layer2Canvas").getContext("2d");
-        this.layer3Ctx = document.getElementById("layer3Canvas").getContext("2d");
+        this.gridCtx = document.getElementById("gridCanvas").getContext("2d", { willReadFrequently: true });
+        this.layer1Ctx = document.getElementById("layer1Canvas").getContext("2d", { willReadFrequently: true });
+        this.layer2Ctx = document.getElementById("layer2Canvas").getContext("2d", { willReadFrequently: true });
+        this.layer3Ctx = document.getElementById("layer3Canvas").getContext("2d", { willReadFrequently: true });
 
         // Otras propiedades y configuraciones necesarias
         this.modo = "";
@@ -192,7 +192,6 @@ class CanvasManager {
         elipse.draw();
     
     }
-
     cleanLine(start, end) {
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
@@ -201,7 +200,69 @@ class CanvasManager {
         // Llamar al método draw de la instancia Linea
         linea.cleanLine(start, end);
     }
-
+    fillCubeta(start) {
+        // Obtener el contexto del canvas actual
+        const ctx = this.getCurrentCanvasContext();
+        // Obtener el color del punto de inicio
+        const startColor = ctx.getImageData(start.x, start.y, 1, 1).data;
+        // Obtener el color seleccionado actual
+        const targetColor = this.color;
+        // Verificar si el color de inicio es igual al color seleccionado
+        if (startColor[0] === targetColor[0] && startColor[1] === targetColor[1] && startColor[2] === targetColor[2] && startColor[3] === targetColor[3]) {
+            // Si el color de inicio ya es igual al color seleccionado, no hace falta rellenar
+            return;
+        }
+        // Llamar al método recursivo para rellenar el área
+        this.floodFill(ctx, start.x, start.y, startColor, targetColor);
+    }
+    
+    floodFill(ctx, x, y, startColor, targetColor) {
+        // Crear una pila para almacenar los píxeles que deben ser llenados
+        const stack = [];
+        // Empujar el punto de inicio a la pila
+        stack.push([x, y]);
+    
+        // Mientras la pila no esté vacía
+        while (stack.length > 0) {
+            // Sacar el último punto de la pila
+            const [currentX, currentY] = stack.pop();
+    
+            // Obtener el color del píxel actual
+            const pixelColor = ctx.getImageData(currentX, currentY, 1, 1).data;
+    
+            // Verificar si el color del píxel es igual al color de inicio
+            if (this.colorsMatch(pixelColor, startColor)) {
+                // Cambiar el color del píxel al color objetivo
+                ctx.fillStyle = this.color;
+                ctx.fillRect(currentX, currentY, 1, 1);
+    
+                // Empujar los píxeles adyacentes a la pila si no han sido procesados antes
+                this.pushIfValid(stack, ctx, currentX + 1, currentY, startColor);
+                this.pushIfValid(stack, ctx, currentX - 1, currentY, startColor);
+                this.pushIfValid(stack, ctx, currentX, currentY + 1, startColor);
+                this.pushIfValid(stack, ctx, currentX, currentY - 1, startColor);
+            }
+        }
+    }
+    
+    colorsMatch(color1, color2) {
+        // Verificar si dos colores son iguales
+        return color1[0] === color2[0] && color1[1] === color2[1] && color1[2] === color2[2] && color1[3] === color2[3];
+    }
+    
+    pushIfValid(stack, ctx, x, y, startColor) {
+        // Verificar si las coordenadas están dentro del canvas
+        if (x >= 0 && x < ctx.canvas.width && y >= 0 && y < ctx.canvas.height) {
+            // Verificar si el color del píxel es igual al color de inicio
+            const pixelColor = ctx.getImageData(x, y, 1, 1).data;
+            if (this.colorsMatch(pixelColor, startColor)) {
+                // Empujar las coordenadas a la pila si el color coincide
+                stack.push([x, y]);
+            }
+        }
+    }
+    
+    
 }
 
 // Exportar la clase

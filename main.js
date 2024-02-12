@@ -31,6 +31,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("pencil").onclick = function () {
         canvasManager.cambiarModo('lapiz');
     };
+    document.getElementById("bucket").onclick = function () {
+        canvasManager.cambiarModo('cubeta');
+    };
     document.getElementById("polygon").onclick = function () {
         canvasManager.cambiarModo('poligono');
         //Salga un selector de numeros y dependiendo del numero seleciconado ejecutar setLadosPoligono
@@ -40,7 +43,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("elipse").onclick = function () {
         canvasManager.cambiarModo('elipse');
     }
-
     document.getElementById("colorPicker").onchange = function () {
         canvasManager.cambiarColor(this.value);
     };      
@@ -71,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
     canvasManager.getCurrentCanvas().addEventListener("mousedown", function (event) {
         console.log("mousedown");
         ctx = canvasManager.getCurrentCanvasContext()
-        // Limpiar el canvas al inicio del dibujo
+   
 
         // Configurar el estado de dibujo y el punto de inicio
         canvasManager.setDrawing(true);
@@ -79,6 +81,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log(startPoint);
         console.log(canvasManager.getDrawing());
+
+         
+        if(canvasManager.getCurrentModo() === 'cubeta'){
+            canvasManager.fillCubeta(startPoint);
+        }
+  
     });
     //ARRASTRAR Y SOLTAR
     canvasManager.getCurrentCanvas().addEventListener("mousemove", function (event) {
