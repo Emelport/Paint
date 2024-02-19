@@ -28,7 +28,7 @@ class Poligonos extends Figura {
         }
 
         // Limpiar el canvas antes de dibujar
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        // this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         // Dibujar el polígono
         this.drawPoligono(this.start, this.end, this.lados);
     }

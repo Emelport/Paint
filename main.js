@@ -90,41 +90,23 @@ document.addEventListener("DOMContentLoaded", function () {
             // console.log(endPoint)
             // Borra el canvas y vuelve a dibujar la línea actualizada
             ctx = canvasManager.getCurrentCanvasContext()
-            if(canvasManager.getCurrentModo() === 'linea'){
-                //limpiar el canvas solo entre los puntos de la linea
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                canvasManager.drawLine(startPoint, endPoint);
-                // canvasManager.cleanLine(startPoint, endPoint);
-            }
-            else if(canvasManager.getCurrentModo() === 'cuadrado'){
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                canvasManager.drawSquare(startPoint, endPoint);
-            }
-            else if(canvasManager.getCurrentModo() === 'borrar'){
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            }
-            else if(canvasManager.getCurrentModo() === 'lapiz'){
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                canvasManager.drawPixel(endPoint);
-            }
-            else if (canvasManager.getCurrentModo() === 'circulo'){
-                // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                canvasManager.drawCircle(startPoint, endPoint);
-            }
-            else if (canvasManager.getCurrentModo() === 'poligono'){
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                canvasManager.drawPolygon(startPoint, endPoint);
-            }
-            else if (canvasManager.getCurrentModo() === 'elipse'){
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                canvasManager.drawElips(startPoint, endPoint);
-            }
+            const modo = canvasManager.getCurrentModo();
 
+            //Si entra a cualquier modo de dibujo
+            if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse') {
+                canvasManager.drawPreview(startPoint, endPoint);
+            }
         }
     });
     // Agrega event listener para el evento de mouseup
     canvasManager.getCurrentCanvas().addEventListener("mouseup", function () {
         // console.log("mouseup");
+            const modo = canvasManager.getCurrentModo();
+
+            //Si entra a cualquier modo de dibujo
+            if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse') {
+                canvasManager.draw(startPoint, endPoint);
+            }
         canvasManager.setDrawing(false);
     });
 

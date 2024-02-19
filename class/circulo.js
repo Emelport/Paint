@@ -24,7 +24,7 @@ class Circulo extends Figura {
     }
 
     // Limpiar el canvas antes de dibujar
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    // this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
     // Ajustar el radio vertical para que coincida con el radio horizontal
     const radius = Math.sqrt(

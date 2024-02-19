@@ -27,6 +27,7 @@ class CanvasManager {
 
         this.ladospoligono = 0;
 
+        this.figuras = [];
     }
 
 
@@ -161,6 +162,7 @@ class CanvasManager {
         const linea = new Linea(ctx, this.color, this.grosor, start, end);
         // Llamar al método draw de la instancia Linea
         linea.draw(start, end);
+        return linea;
     }
     drawSquare(start, end) {
 
@@ -170,12 +172,14 @@ class CanvasManager {
         const cuadrado = new Cuadrado(ctx, this.color, this.grosor, start, end);
         // Llamar al método draw de la instancia Linea
         cuadrado.draw();
+        return cuadrado;
     }
     drawCircle(start,end){
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
         const circulo = new Circulo(ctx, this.color, this.grosor, start, end);
         circulo.draw();
+        return circulo;
     }
     drawPolygon(start,end){
         // Obtener el contexto del canvas actual
@@ -184,13 +188,14 @@ class CanvasManager {
         // console.log(ctx, this.color, this.grosor, start, end, line)
         const poligonos = new Poligonos(ctx, this.color, this.grosor, start, end, line);
         poligonos.draw();
+        return poligonos;
     }
     drawElips(start,end){
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
         const elipse = new Elipse(ctx, this.color, this.grosor, start, end);
         elipse.draw();
-    
+        return elipse;
     }
     cleanLine(start, end) {
         // Obtener el contexto del canvas actual
@@ -260,6 +265,77 @@ class CanvasManager {
                 stack.push([x, y]);
             }
         }
+    }
+
+    drawPreview(start, end) {
+        // Obtener el contexto del canvas actual
+        // const ctx = this.getCurrentCanvasContext();
+        // Limpiar el canvas
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        // Dibujar la figura correspondiente
+        if (this.modo === "linea") {
+            const line = this.drawLine(start, end);
+        } else if (this.modo === "cuadrado") {
+            const square = this.drawSquare(start, end);
+        } else if (this.modo === "circulo") {
+            const circle = this.drawCircle(start, end);
+        } else if (this.modo === "poligono") {
+            const poligonos = this.drawPolygon(start, end);
+        } else if (this.modo === "elipse") {
+            const elipse = this.drawElips(start, end);
+        }
+        else if (this.modo === "lapiz") {
+            const Figurax = new Figura(ctx, this.color, this.grosor);
+            Figurax.drawPixel(end);
+        }
+        else if (this.modo === "borrar") {
+            const ctx = this.getCurrentCanvasContext();
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);  
+        }
+
+
+
+    }
+
+    draw(start, end) {
+        // Obtener el contexto del canvas actual
+        // const ctx = this.getCurrentCanvasContext();
+        // Limpiar el canvas
+        // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        // Dibujar la figura correspondiente
+        if (this.modo === "linea") {
+            const line = this.drawLine(start, end);
+            this.figuras.push(line);
+
+        } else if (this.modo === "cuadrado") {
+            const square = this.drawSquare(start, end);
+            this.figuras.push(square);
+        } else if (this.modo === "circulo") {
+            const circle = this.drawCircle(start, end);
+            this.figuras.push(circle);
+        } else if (this.modo === "poligono") {
+            const poligonos = this.drawPolygon(start, end);
+            this.figuras.push(poligonos);
+        } else if (this.modo === "elipse") {
+            const elipse = this.drawElips(start, end);
+            this.figuras.push(elipse);
+        }
+        else if (this.modo === "lapiz") {
+            const F = new Figura(ctx, this.color, this.grosor);
+            F.drawPixel(end);
+        }
+        else if (this.modo === "borrar") {
+            const ctx = this.getCurrentCanvasContext();
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);  
+        }
+    }
+
+    renderizarFiguras(){
+        const figurasrender = this.figuras;
+        this.figuras.forEach(figura => {
+            figura.draw();
+        });
+        this.figuras = figurasrender;
     }
     
     

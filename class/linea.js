@@ -132,25 +132,12 @@ class Linea extends Figura{
         }
     }
 
-    cleanLine(start, end) {
-        console.log("Limpiando Linea");
-        //Limpiar la linea entre los puntos
-        var x = start.x;
-        var y = start.y;
-        var dx = end.x - start.x;
-        var dy = end.y - start.y;
-        var steps = Math.abs(dx) > Math.abs(dy) ? Math.abs(dx) : Math.abs(dy);
-        var xIncrement = dx / steps;
-        var yIncrement = dy / steps;
-
-        for (var i = 0; i <= steps; i++) {
-            var roundedX = Math.round(x);
-            var roundedY = Math.round(y);
-            this.borrarPixel(roundedX, roundedY);
-            x += xIncrement;
-            y += yIncrement;
+    clean() {
+        //Limpiar los puntos en el canvas
+        for (var i = 0; i < this.puntos.length; i++) {
+            this.borrarPixel(this.puntos[i].x, this.puntos[i].y);
         }
-
+        
     }
   
     

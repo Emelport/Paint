@@ -39,11 +39,13 @@ class Cuadrado extends Figura {
        };
    
        // Dibujar el contorno del cuadrado
-       this.linea.drawDDA(cuadradoStart, { x: cuadradoEnd.x, y: cuadradoStart.y });
-       this.linea.drawDDA({ x: cuadradoEnd.x, y: cuadradoStart.y }, cuadradoEnd);
-       this.linea.drawDDA(cuadradoEnd, { x: cuadradoStart.x, y: cuadradoEnd.y });
-       this.linea.drawDDA({ x: cuadradoStart.x, y: cuadradoEnd.y }, cuadradoStart);
+        this.puntos.push(this.linea.drawDDA(cuadradoStart, { x: cuadradoEnd.x, y: cuadradoStart.y }));
+        this.puntos.push(this.linea.drawDDA({ x: cuadradoEnd.x, y: cuadradoStart.y }, cuadradoEnd));
+        this.puntos.push(this.linea.drawDDA(cuadradoEnd, { x: cuadradoStart.x, y: cuadradoEnd.y })),
+        this.puntos.push(this.linea.drawDDA({ x: cuadradoStart.x, y: cuadradoEnd.y }, cuadradoStart));
 
+        console.log(this.puntos);
+        return this.puntos;
     }
 }
 
