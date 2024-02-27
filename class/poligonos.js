@@ -11,6 +11,7 @@ class Poligonos extends Figura {
     }
 
     draw() {
+        // console.log("Dibujando Poligono")
         if (!this.ctx) {
             console.error("El contexto del canvas no es válido.");
             return;
@@ -34,7 +35,7 @@ class Poligonos extends Figura {
     }
 
     drawPoligono(center, apotema, lados) {
-        // console.log("imprimiendo Poligono")
+        console.log("imprimiendo Poligono")
         // Calcular el radio
         const radius = Math.sqrt(
             Math.pow(apotema.x - center.x, 2) +
@@ -56,12 +57,11 @@ class Poligonos extends Figura {
         for (let i = 0; i < vertices.length; i++) {
             const start = vertices[i];
             const end = vertices[(i + 1) % lados];
-            const linea = new Linea(this.ctx, this.color, this.grosor, start, end);
-            const puntos_linea=linea.draw();
-            this.puntos.push(puntos_linea);
+            var linea = new Linea(this.ctx, this.color, this.grosor, start, end);
+            this.puntos.push(linea.draw());
         }
 
-        console.log(this.puntos);
+        // console.log(this.puntos);
        
     }
 }

@@ -7,21 +7,19 @@ class Cuadrado extends Figura {
         // Recibe la diagonal del cuadrado
         this.start = start;
         this.end = end;
-        
-        //Objeto Linea
-        this.linea = new Linea(ctx, color, grosor);
+
     }
     // Dibujar el cuadrado
     draw() {
         this.drawOutline(this.start, this.end);
+
     }
     // Dibujar el contorno del cuadrado
     drawOutline(start,end) {
-
-        console.log("Dibujando Cuadrado");
-        //cordenadas
-        console.log(start.x + "," + start.y);
-        console.log(end.x + "," + end.y);
+        // console.log("Dibujando Cuadrado");
+        // //cordenadas
+        // console.log(start.x + "," + start.y);
+        // console.log(end.x + "," + end.y);
 
        // Calcular el ancho y alto del cuadrado
        var width = Math.abs(end.x - start.x);
@@ -38,14 +36,25 @@ class Cuadrado extends Figura {
            y: cuadradoStart.y + Math.min(width, height)
        };
    
-       // Dibujar el contorno del cuadrado
-        this.puntos.push(this.linea.drawDDA(cuadradoStart, { x: cuadradoEnd.x, y: cuadradoStart.y }));
-        this.puntos.push(this.linea.drawDDA({ x: cuadradoEnd.x, y: cuadradoStart.y }, cuadradoEnd));
-        this.puntos.push(this.linea.drawDDA(cuadradoEnd, { x: cuadradoStart.x, y: cuadradoEnd.y })),
-        this.puntos.push(this.linea.drawDDA({ x: cuadradoStart.x, y: cuadradoEnd.y }, cuadradoStart));
+        // Dibujar el contorno del cuadrado
+        const linea1 = new Linea(this.ctx, this.color, this.grosor, cuadradoStart, { x: cuadradoEnd.x, y: cuadradoStart.y });
+        const linea2 = new Linea(this.ctx, this.color, this.grosor, { x: cuadradoEnd.x, y: cuadradoStart.y }, cuadradoEnd);
+        const linea3 = new Linea(this.ctx, this.color, this.grosor, cuadradoEnd, { x: cuadradoStart.x, y: cuadradoEnd.y });
+        const linea4 = new Linea(this.ctx, this.color, this.grosor, { x: cuadradoStart.x, y: cuadradoEnd.y }, cuadradoStart);
 
-        console.log(this.puntos);
-        return this.puntos;
+        this.puntos = linea1.draw();
+        this.puntos = linea2.draw();
+        this.puntos = linea3.draw();
+        this.puntos = linea4.draw();
+        // console.log(this.puntos);   
+    }
+
+    clean() {
+       //Por cada punto de la linea
+         this.puntos.forEach(punto => {
+              //Limpiar el punto
+              this.borrarPixel(punto.x, punto.y);
+         });
     }
 }
 

@@ -37,8 +37,8 @@ class CanvasManager {
 
         this.gridCtx.canvas.width = 1024;
         this.gridCtx.canvas.height = 768;
-        this.layer1Ctx.canvas.width = 1024;
-        this.layer1Ctx.canvas.height = 768;
+        this.layer1Ctx.canvas.width = 1000;
+        this.layer1Ctx.canvas.height = 1000;
         this.layer2Ctx.canvas.width = 1024;
         this.layer2Ctx.canvas.height = 768;
         this.layer3Ctx.canvas.width = 1024;
@@ -197,6 +197,14 @@ class CanvasManager {
         elipse.draw();
         return elipse;
     }
+    drawPixel(point) {
+        // Obtener el contexto del canvas actual
+        const ctx = this.getCurrentCanvasContext();
+        // Crear un objeto de tipo Figura (o tu clase correspondiente)
+        const figura = new Figura(ctx, this.color, this.grosor);
+        // Llamar al método drawPixel del objeto Figura
+        figura.drawPixel(point.x, point.y);
+    }
     cleanLine(start, end) {
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
@@ -219,8 +227,7 @@ class CanvasManager {
         }
         // Llamar al método recursivo para rellenar el área
         this.floodFill(ctx, start.x, start.y, startColor, targetColor);
-    }
-    
+    }  
     floodFill(ctx, x, y, startColor, targetColor) {
         // Crear una pila para almacenar los píxeles que deben ser llenados
         const stack = [];
@@ -269,40 +276,40 @@ class CanvasManager {
 
     drawPreview(start, end) {
         // Obtener el contexto del canvas actual
-        // const ctx = this.getCurrentCanvasContext();
-        // Limpiar el canvas
+        const ctx = this.getCurrentCanvasContext();
+        // // Limpiar el canvas
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         // Dibujar la figura correspondiente
         if (this.modo === "linea") {
             const line = this.drawLine(start, end);
+            this.renderizarFiguras();
         } else if (this.modo === "cuadrado") {
             const square = this.drawSquare(start, end);
+            this.renderizarFiguras();   
         } else if (this.modo === "circulo") {
             const circle = this.drawCircle(start, end);
-        } else if (this.modo === "poligono") {
+            this.renderizarFiguras();
+
+        } else if (this.modo    === "poligono") {
             const poligonos = this.drawPolygon(start, end);
+            this.renderizarFiguras();
         } else if (this.modo === "elipse") {
             const elipse = this.drawElips(start, end);
+            this.renderizarFiguras();
         }
         else if (this.modo === "lapiz") {
-            const Figurax = new Figura(ctx, this.color, this.grosor);
-            Figurax.drawPixel(end);
+            const F = new Figura(ctx, this.color, this.grosor);
+            F.drawPixel(end);
+            this.renderizarFiguras();
         }
-        else if (this.modo === "borrar") {
-            const ctx = this.getCurrentCanvasContext();
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);  
-        }
+
 
 
 
     }
 
     draw(start, end) {
-        // Obtener el contexto del canvas actual
-        // const ctx = this.getCurrentCanvasContext();
-        // Limpiar el canvas
-        // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        // Dibujar la figura correspondiente
+
         if (this.modo === "linea") {
             const line = this.drawLine(start, end);
             this.figuras.push(line);
@@ -326,8 +333,10 @@ class CanvasManager {
         }
         else if (this.modo === "borrar") {
             const ctx = this.getCurrentCanvasContext();
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);  
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); 
+            this.figuras = [];
         }
+    
     }
 
     renderizarFiguras(){
@@ -338,6 +347,14 @@ class CanvasManager {
         this.figuras = figurasrender;
     }
     
+    lineTest(){
+        console.log("empezando test");
+        const ctx = this.getCurrentCanvasContext();
+        const linea = new Linea(ctx);
+        linea.testRendimiento();
+        // linea.testRendimiento2();
+        // linea.testRendimiento3();
+    }
     
 }
 

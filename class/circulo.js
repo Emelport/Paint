@@ -47,6 +47,15 @@ class Circulo extends Figura {
     this.drawPixel(centerX - y, centerY + x); // Octante 4
     this.drawPixel(centerX + y, centerY - x); // Octante 6
     this.drawPixel(centerX - y, centerY - x); // Octante 5
+
+    this.puntos.push({ x: centerX + x, y: centerY + y });
+    this.puntos.push({ x: centerX - x, y: centerY + y });
+    this.puntos.push({ x: centerX + x, y: centerY - y });
+    this.puntos.push({ x: centerX - x, y: centerY - y });
+    this.puntos.push({ x: centerX + y, y: centerY + x });
+    this.puntos.push({ x: centerX - y, y: centerY + x });
+    this.puntos.push({ x: centerX + y, y: centerY - x });
+    this.puntos.push({ x: centerX - y, y: centerY - x });
   }
 
   drawBressenhamCircle(center, radius) {

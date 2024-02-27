@@ -7,13 +7,17 @@
     padding-left: 1rem;
     /* Fuente divertida */
     font-family: 'Lobster', cursive;
-
+    display: flex;
 }
+
+.undoRedo{
+    margin-left: auto;
+    margin-right: 1rem;
+}
+
 .container{
     margin-left: 64px;
     width: 100%;
-    /* Fondo Oscuro */
-
 }
 
 .canvas{
@@ -35,7 +39,7 @@
     align-items: center;
     background-color: #ccc;
     /* Barra vertical */
-    border-right: 1px solid #333;
+    /* border-right: 1px solid #333; */
 }
 
 /* Imagenes de toolbox  32x32 */
@@ -49,7 +53,6 @@
 .toolbox img:hover {
     background-color: #f1f1f1;
     cursor: pointer;
-    /* escalar */
     transform: scale(1.2);
 }   
 

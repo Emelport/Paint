@@ -25,7 +25,7 @@ class Elipse extends Figura {
     }
 
     // Limpiar el canvas antes de dibujar
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    // this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
     // Dibujar la elipse
     this.drawElipse(this.start, this.end);
@@ -41,9 +41,8 @@ class Elipse extends Figura {
     for (let t = 0; t < 2 * Math.PI; t += paso) {
       const x = center.x + radiusX * Math.cos(t);
       const y = center.y + radiusY * Math.sin(t);
-    //   this.ctx.beginPath();
-      this.ctx.fillStyle = this.color;
-      this.ctx.fillRect(x, y, 1, 1);
+      this.drawPixel(x, y); // L
+      this.puntos.push({ x, y });
     }
     this.ctx.closePath();
   }

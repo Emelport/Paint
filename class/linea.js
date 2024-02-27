@@ -50,30 +50,36 @@ class Linea extends Figura{
 
     // Formula General de la Recta y = mx + b
     drawGeneral(start, end) {
-        // Ecuacion de la recta y = mx + b
-
         var dx = end.x - start.x;        // Delta x
         var dy = end.y - start.y;        // Delta y
 
-        // Pendiente
-        var m = dy / dx;
-        var b = start.y - m * start.x;   // Ordenada en el origen
+        // Verificar si la línea es vertical
+        if (dx === 0) {
+            var yIncrement = (dy > 0) ? 1 : -1;
+            for (var y = start.y; y !== end.y; y += yIncrement) {
+                this.drawPixel(start.x, y);
+            }
+            this.drawPixel(end.x, end.y);
+            return;
+        }
 
-        // Intercambiar los puntos para que siempre se dibuje de izquierda a derecha
+        // Resto del código para el caso de una línea no vertical
+        var m = dy / dx;
+        var b = start.y - m * start.x;
+
         if (start.x > end.x) {
             var temp = start;
             start = end;
             end = temp;
         }
 
-        // Coordenada inicial
-        var x = start.x;
         var y = start.y;
+        var x;
+        var yIncrement = 1;
+        var xIncrement = 1;
 
-        // Determinar el cuadrante
-        var xIncrement, yIncrement;
-
-        if (Math.abs(m) <= 1) {
+        // Manejar líneas con m cercanas a 0 o infinito
+        if (Math.abs(m) < 1) {
             xIncrement = 1;
             yIncrement = m;
         } else {
@@ -81,25 +87,27 @@ class Linea extends Figura{
             yIncrement = m < 0 ? -1 : 1;
         }
 
-        //Dibujar los puntos intermedios
-        while (x <= end.x) {
+        for (var i = start.x; i <= end.x; i += xIncrement) {
+            x = i;
+            y = m * x + b;
             this.drawPixel(Math.round(x), Math.round(y));
-            x += xIncrement;
-            y += yIncrement;
+            this.puntos.push({x: Math.round(x), y: Math.round(y)});
         }
 
-        // Pintar el punto final
         this.drawPixel(end.x, end.y);
+        this.puntos.push({x: end.x, y: end.y});
+        return this.puntos;
     }
+
 
     // LINEA BRESENHAM
     drawBresenham(start, end) {
         // Algoritmo de Bresenham
-        
+            
         // Calcular la distancia entre los dos puntos
         var dx = Math.abs(end.x - start.x);
         var dy = Math.abs(end.y - start.y);
-        
+            
         var sx = (start.x < end.x) ? 1 : -1; // si el punto inicial es menor que el punto final entonces sx = 1, de lo contrario sx = -1
         var sy = (start.y < end.y) ? 1 : -1; // si el punto inicial es menor que el punto final entonces sy = 1, de lo contrario sy = -1
         // Calcular el pk
@@ -139,9 +147,423 @@ class Linea extends Figura{
         }
         
     }
-  
+
+    testRendimiento() {
+
+        const canvas = this.ctx.canvas;
+        const width = canvas.width;
+        const height = canvas.height;
+        this.grosor = 1; //grosor de la linea
+        let delay = 2000; 
+
+        setTimeout(() => {
+            this.color = "#000000"; //negro
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: 0, y: i * (height / 1000) };
+                const end = { x: width, y: i * (height / 1000) };
+                this.drawDDA(start, end);
+            }
+            let endTime = performance.now();
+            console.log("DDA horizontal I-D:  ", endTime - startTime, "ms");
+
+        },delay);
+
+        //Cambiar el color y aumentar el delay
+        delay = 3000;
+        setTimeout(() => {
+            this.color = "#FF0000"; //rojo
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: width, y: i * (height / 1000) };
+                const end = { x: 0, y: i * (height / 1000) };
+                this.drawDDA(start, end);
+            }
+            let endTime = performance.now();
+            console.log("DDA horizontal D-I: ", endTime - startTime, "ms");
+
+        },delay);
+
+        //Cambiar el color y aumentar el delay
+        delay = 4000;
+        setTimeout(() => {
+            this.color="#00FF00"; //Verde
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: i * (width / 1000), y: 0 };
+                const end = { x: i * (width / 1000), y: height };
+                this.drawDDA(start, end);
+            }
+            let endTime = performance.now();
+            console.log("DDA vertical  ↑ ↓: ", endTime - startTime, "ms");
+
+        },delay);
+
+        //Cambiar el color y aumentar el delay
+        delay = 5000;
+        setTimeout(() => {
+            this.color="#0000FF"; //Azul
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: i * (width / 1000), y: height };
+                const end = { x: i * (width / 1000), y: 0 };
+                this.drawDDA(start, end);
+            }
+            let endTime = performance.now();
+            console.log("DDA vertical ↓ ↑: ", endTime - startTime, "ms");
+
+        },delay);
+       //*********************************************  REVISAR  */
+        // DDA diagonal D-I ↑ ↓
+        delay = 6000;
+        setTimeout(() => {
+            this.color="#FF00FF"; //Morado
+
+            const startTime = performance.now();
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: width * i / 1000, y: height * i / 1000 };
+                const end = { x: width * (1000 - i) / 1000, y: height * (1000 - i) / 1000 };
+                this.drawDDA(start, end);
+            }
+            let endTime = performance.now();
+            console.log("DDA diagonal D-I ↑ ↓ : ", endTime - startTime, "ms");
+
+        },delay);
+
+        // DDA diagonal D-I ↓ ↑
+        delay = 7000;
+        setTimeout(() => {
+            this.color="#00FFFF"; //Cyan
+
+            const startTime = performance.now();
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: width * i / 1000, y: height * (1000 - i) / 1000 };
+                const end = { x: width * (1000 - i) / 1000, y: height * i / 1000 };
+                this.drawDDA(start, end);
+            }
+            let endTime = performance.now();
+            console.log("DDA diagonal D-I ↓ ↑ : ", endTime - startTime, "ms");
+
+        },delay);
+
+        // DDA diagonal I-D ↑ ↓
+        delay = 8000;
+        setTimeout(() => {
+            this.color="#00F0F0"; // 
+
+            const startTime = performance.now();
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: width * i / 1000, y: height * (1000 - i) / 1000 };
+                const end = { x: width * (1000 - i) / 1000, y: height * i / 1000 };
+                this.drawDDA(start, end);
+            }
+            let endTime = performance.now();
+            console.log("DDA diagonal I-D ↑ ↓: ", endTime - startTime, "ms");
+
+        },delay);
+                
+        // DDA Diagonal I-D ↓ ↑ 
+        delay = 9000;
+        setTimeout(() => {
+            this.color = "#0FFF00"; // 
+
+            const startTime = performance.now();
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: width * i / 1000, y: height * i / 1000 };
+                const end = { x: width * (1000 - i) / 1000, y: height * (1000 - i) / 1000 };
+                this.drawDDA(start, end);
+            }
+            let endTime = performance.now();
+            console.log("DDA Diagonal I-D ↓ ↑:  ", endTime - startTime, "ms");
+
+        },delay);
+
+
+    }
+    testRendimiento2() {
+
+        const canvas = this.ctx.canvas;
+        const width = canvas.width;
+        const height = canvas.height;
+        this.grosor = 1; //grosor de la linea
+        let delay = 2000; 
+
+        setTimeout(() => {
+            this.color = "#000000"; //negro
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: 0, y: i * (height / 1000) };
+                const end = { x: width, y: i * (height / 1000) };
+                this.drawGeneral(start, end);
+            }
+            let endTime = performance.now();
+            console.log("General horizontal I-D:  ", endTime - startTime, "ms");
+
+        },delay);
+
+        //Cambiar el color y aumentar el delay
+        delay = 3000;
+        setTimeout(() => {
+            this.color = "#FF0000"; //rojo
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: width, y: i * (height / 1000) };
+                const end = { x: 0, y: i * (height / 1000) };
+                this.drawGeneral(start, end);
+            }
+            let endTime = performance.now();
+            console.log("General horizontal D-I: ", endTime - startTime, "ms");
+
+        },delay);
+
+        //Cambiar el color y aumentar el delay
+        delay = 4000;
+        setTimeout(() => {
+            this.color="#00FF00"; //Verde
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: i * (width / 1000), y: 0 };
+                const end = { x: i * (width / 1000), y: height };
+                this.drawGeneral(start, end);
+            }
+            let endTime = performance.now();
+            console.log("General vertical  ↑ ↓: ", endTime - startTime, "ms");
+
+        },delay);
+
+        //Cambiar el color y aumentar el delay
+        delay = 5000;
+        setTimeout(() => {
+            this.color="#0000FF"; //Azul
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: i * (width / 1000), y: height };
+                const end = { x: i * (width / 1000), y: 0 };
+                this.drawGeneral(start, end);
+            }
+            let endTime = performance.now();
+            console.log("General vertical ↓ ↑: ", endTime - startTime, "ms");
+
+        },delay);
+       
+        delay = 6000;
+
+        setTimeout(() => {
+            //Cambiar el color y aumentar el delay
+            this.color="#FF00FF"; //Morado
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: width, y: 0 };
+                const end = { x: 0, y: height };
+                this.drawGeneral(start, end);
+            }
+            let endTime = performance.now();
+            console.log("General diagonal D-I ↑ ↓ : ", endTime - startTime, "ms");
+
+        },delay);
+
+        //Cambiar el color y aumentar el delay
+        delay = 7000;
+        setTimeout(() => {
+            this.color="#00FFFF"; //Cyan
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: width, y: height };
+                const end = { x: 0, y: 0 };
+                this.drawGeneral(start, end);
+            }
+            let endTime = performance.now();
+            console.log("General diagonal D-I ↓ ↑ : ", endTime - startTime, "ms");
+
+        },delay);
+
+        //cambiar el color y delay
+        delay = 8000;
+        setTimeout(() => {
+            this.color="#00F0F0";// 
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: 0, y: height };
+                const end = { x: width, y: 0 };
+                this.drawGeneral(start, end);
+            }
+            let endTime = performance.now();
+            console.log("General diagonal I-D ↓ ↑: ", endTime - startTime, "ms");
+
+        },delay);
+        
+        //Cambiar el color y aumentar el delay
+        delay = 9000;
+        setTimeout(() => {
+            this.color = "#0FFF00"; // 
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: 0, y: height };
+                const end = { x: width, y: 0 };
+                this.drawGeneral(start, end);
+            }
+            let endTime = performance.now();
+            console.log("General Diagonal I-D ↑ ↓:  ", endTime - startTime, "ms");
+
+        },delay);
+
+    }
+    testRendimiento3() {
+
+        const canvas = this.ctx.canvas;
+        const width = canvas.width;
+        const height = canvas.height;
+        this.grosor = 1; //grosor de la linea
+        let delay = 2000; 
+
+        setTimeout(() => {
+            this.color = "#000000"; //negro
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: 0, y: i * (height / 1000) };
+                const end = { x: width, y: i * (height / 1000) };
+                this.drawBressenham(start, end);
+            }
+            let endTime = performance.now();
+            console.log("Bressenham horizontal I-D:  ", endTime - startTime, "ms");
+
+        },delay);
+
+        //Cambiar el color y aumentar el delay
+        delay = 3000;
+        setTimeout(() => {
+            this.color = "#FF0000"; //rojo
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: width, y: i * (height / 1000) };
+                const end = { x: 0, y: i * (height / 1000) };
+                this.drawBressenham(start, end);
+            }
+            let endTime = performance.now();
+            console.log("Bressenham horizontal D-I: ", endTime - startTime, "ms");
+
+        },delay);
+
+        //Cambiar el color y aumentar el delay
+        delay = 4000;
+        setTimeout(() => {
+            this.color="#00FF00"; //Verde
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: i * (width / 1000), y: 0 };
+                const end = { x: i * (width / 1000), y: height };
+                this.drawBressenham(start, end);
+            }
+            let endTime = performance.now();
+            console.log("Bressenham vertical  ↑ ↓: ", endTime - startTime, "ms");
+
+        },delay);
+
+        //Cambiar el color y aumentar el delay
+        delay = 5000;
+        setTimeout(() => {
+            this.color="#0000FF"; //Azul
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: i * (width / 1000), y: height };
+                const end = { x: i * (width / 1000), y: 0 };
+                this.drawBressenham(start, end);
+            }
+            let endTime = performance.now();
+            console.log("Bressenham vertical ↓ ↑: ", endTime - startTime, "ms");
+
+        },delay);
+       
+        delay = 6000;
+
+        setTimeout(() => {
+            //Cambiar el color y aumentar el delay
+            this.color="#FF00FF"; //Morado
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: width, y: 0 };
+                const end = { x: 0, y: height };
+                this.drawBressenham(start, end);
+            }
+            let endTime = performance.now();
+            console.log("Bressenham diagonal D-I ↑ ↓ : ", endTime - startTime, "ms");
+
+        },delay);
+
+        //Cambiar el color y aumentar el delay
+        delay = 7000;
+        setTimeout(() => {
+            this.color="#00FFFF"; //Cyan
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: width, y: height };
+                const end = { x: 0, y: 0 };
+                this.drawBressenham(start, end);
+            }
+            let endTime = performance.now();
+            console.log("Bressenham diagonal D-I ↓ ↑ : ", endTime - startTime, "ms");
+
+        },delay);
+
+        //cambiar el color y delay
+        delay = 8000;
+        setTimeout(() => {
+            this.color="#00F0F0";// 
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: 0, y: height };
+                const end = { x: width, y: 0 };
+                this.drawBressenham(start, end);
+            }
+            let endTime = performance.now();
+            console.log("Bressenham diagonal I-D ↓ ↑: ", endTime - startTime, "ms");
+
+        },delay);
+        
+        //Cambiar el color y aumentar el delay
+        delay = 9000;
+        setTimeout(() => {
+            this.color = "#0FFF00"; // 
+
+            const startTime = performance.now()
+            for (let i = 0; i < 1000; i++) {
+                const start = { x: 0, y: height };
+                const end = { x: width, y: 0 };
+                this.drawBressenham(start, end);
+            }
+            let endTime = performance.now();
+            console.log("Bressenham Diagonal I-D ↑ ↓:  ", endTime - startTime, "ms");
+
+        },delay);
+
+    }
+    
     
 
+    clearCanvas() {
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+     }
+    
+    
 }
 
 export { Linea };

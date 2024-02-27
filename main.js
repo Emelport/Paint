@@ -34,12 +34,15 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("bucket").onclick = function () {
         canvasManager.cambiarModo('cubeta');
     };
+    document.getElementById("lineTest").onclick = function () {
+        canvasManager.lineTest();
+    }
     document.getElementById("polygon").onclick = function () {
         canvasManager.cambiarModo('poligono');
         //Salga un selector de numeros y dependiendo del numero seleciconado ejecutar setLadosPoligono
         var lados = prompt("Ingrese el numero de lados del poligono");
         canvasManager.setLadosPoligono(lados);
-    };
+    };3
     document.getElementById("elipse").onclick = function () {
         canvasManager.cambiarModo('elipse');
     }
@@ -68,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("layer3").onclick = function () {
         canvasManager.setCurrentCanvas("layer3Canvas");
     };
+
     //***********************EVENTOS***********************/
     // Agrega un event listener para el evento de clic en el canvas
     canvasManager.getCurrentCanvas().addEventListener("mousedown", function (event) {
@@ -84,6 +88,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     //ARRASTRAR Y SOLTAR
     canvasManager.getCurrentCanvas().addEventListener("mousemove", function (event) {
+        var coordenadas = canvasManager.getRelativeCoordinates(event);
+        //Coordenadas a 2 decimales
+        document.getElementById("coordenadas").innerHTML = "X: " + coordenadas.x.toFixed(2) + " Y: " + coordenadas.y.toFixed(2);
+   
         if (canvasManager.getDrawing()) {
             // Actualiza el punto final mientras se arrastra el ratón
             endPoint = canvasManager.getRelativeCoordinates(event);
@@ -116,5 +124,9 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(canvasManager.getDrawing());
         canvasManager.setDrawing(false);
     });
+
+
+    //***************************BOTONES ****************/
+    
 
 });
