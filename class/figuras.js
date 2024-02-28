@@ -26,6 +26,9 @@ class Figura {
         }
     }
 
+    isInside(start) {
+        // Implementar en las clases hijas
+    }	
     setContext(newContext) {
         this.ctx = newContext;
     }

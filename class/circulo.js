@@ -74,6 +74,21 @@ class Circulo extends Figura {
       }
     }
   }
+
+  isInside(start) {
+    //Calcular si el punto está dentro del círculo y retornar true o false
+    const radius = Math.sqrt(
+      Math.pow(this.end.x - this.start.x, 2) +
+      Math.pow(this.end.y - this.start.y, 2)
+    ) / 2;
+
+    const distance = Math.sqrt(
+      Math.pow(start.x - this.start.x, 2) + Math.pow(start.y - this.start.y, 2)
+    );
+
+    return distance <= radius;
+    
+  }
 }
 
 export { Circulo };

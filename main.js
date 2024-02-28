@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
     //Modificar el style de los canvas que no son el actual y ocultarlos
     //************************MODOS***********************/
     //Cambiar el modo de dibujo
+    document.getElementById("cursor").onclick = function () {
+        canvasManager.cambiarModo('cursor');
+    };
     document.getElementById("line").onclick = function () {
         canvasManager.cambiarModo('linea');
     };
@@ -65,12 +68,12 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("layer1").onclick = function () {
         canvasManager.setCurrentCanvas("layer1Canvas");
     };
-    document.getElementById("layer2").onclick = function () {
-        canvasManager.setCurrentCanvas("layer2Canvas");
-    };
-    document.getElementById("layer3").onclick = function () {
-        canvasManager.setCurrentCanvas("layer3Canvas");
-    };
+    // document.getElementById("layer2").onclick = function () {
+    //     canvasManager.setCurrentCanvas("layer2Canvas");
+    // };
+    // document.getElementById("layer3").onclick = function () {
+    //     canvasManager.setCurrentCanvas("layer3Canvas");
+    // };
 
     //***********************EVENTOS***********************/
     // Agrega un event listener para el evento de clic en el canvas
@@ -109,24 +112,25 @@ document.addEventListener("DOMContentLoaded", function () {
     // Agrega event listener para el evento de mouseup
     canvasManager.getCurrentCanvas().addEventListener("mouseup", function () {
         // console.log("mouseup");
-            const modo = canvasManager.getCurrentModo();
+        const modo = canvasManager.getCurrentModo();
 
-            //Si entra a cualquier modo de dibujo
-            if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse') {
-                canvasManager.draw(startPoint, endPoint);
-            }
+        //Si entra a cualquier modo de dibujo
+        if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse') {
+            canvasManager.draw(startPoint, endPoint);
+        }else if (modo === 'cursor') {
+            canvasManager.selectElement(startPoint);
+        }
         canvasManager.setDrawing(false);
     });
-
     // Agrega event listener para el evento de mouseout
     canvasManager.getCurrentCanvas().addEventListener("mouseout", function () {
         console.log("mouseout");
         console.log(canvasManager.getDrawing());
         canvasManager.setDrawing(false);
     });
-
-
     //***************************BOTONES ****************/
     
 
+    //*************************** Estados **************
+    
 });

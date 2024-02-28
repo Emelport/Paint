@@ -48,7 +48,6 @@ class Cuadrado extends Figura {
         this.puntos = linea4.draw();
         // console.log(this.puntos);   
     }
-
     clean() {
        //Por cada punto de la linea
          this.puntos.forEach(punto => {
@@ -56,6 +55,26 @@ class Cuadrado extends Figura {
               this.borrarPixel(punto.x, punto.y);
          });
     }
+
+    isInside(start) {
+        // Calcular si el punto está dentro del cuadrado
+        var width = Math.abs(this.end.x - this.start.x);
+        var height = Math.abs(this.end.y - this.start.y);
+        var cuadradoStart = {
+            x: (this.end.x > this.start.x) ? this.start.x : this.end.x,
+            y: (this.end.y > this.start.y) ? this.start.y : this.end.y
+        };
+        var cuadradoEnd = {
+            x: cuadradoStart.x + Math.min(width, height),
+            y: cuadradoStart.y + Math.min(width, height)
+        };
+
+        if (start.x >= cuadradoStart.x && start.x <= cuadradoEnd.x && start.y >= cuadradoStart.y && start.y <= cuadradoEnd.y) {
+            return true;
+        }
+        return false;
+    }
+
 }
 
 export { Cuadrado };

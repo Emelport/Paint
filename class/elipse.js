@@ -47,6 +47,24 @@ class Elipse extends Figura {
     this.ctx.closePath();
   }
 
+  isInside(start) {
+    // Calcular si el punto está dentro de la elipse
+    const radiusX = Math.abs(this.end.x - this.start.x) / 2;
+    const radiusY = Math.abs(this.end.y - this.start.y) / 2;
+    const centerX = (this.start.x + this.end.x) / 2;
+    const centerY = (this.start.y + this.end.y) / 2;
+
+    const x = start.x - centerX;
+    const y = start.y - centerY;
+
+    return (
+      Math.pow(x, 2) / Math.pow(radiusX, 2) +
+      Math.pow(y, 2) / Math.pow(radiusY, 2) <= 1
+    );
+  }
+
+  
+
 }
 
 export { Elipse };

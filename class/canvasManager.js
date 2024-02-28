@@ -22,15 +22,13 @@ class CanvasManager {
         this.startPoint = null;
         this.endPoint = null;
         this.currentCanvas = null;
+        this.ladospoligono = 0;
+        this.figuraSeleccionada = null;
         this.setupCanvas();
         this.setupListeners();
 
-        this.ladospoligono = 0;
-
         this.figuras = [];
     }
-
-
     setupCanvas() {
 
         //Tamano de los canvas
@@ -256,12 +254,10 @@ class CanvasManager {
             }
         }
     }
-    
     colorsMatch(color1, color2) {
         // Verificar si dos colores son iguales
         return color1[0] === color2[0] && color1[1] === color2[1] && color1[2] === color2[2] && color1[3] === color2[3];
     }
-    
     pushIfValid(stack, ctx, x, y, startColor) {
         // Verificar si las coordenadas están dentro del canvas
         if (x >= 0 && x < ctx.canvas.width && y >= 0 && y < ctx.canvas.height) {
@@ -273,7 +269,6 @@ class CanvasManager {
             }
         }
     }
-
     drawPreview(start, end) {
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
@@ -307,7 +302,6 @@ class CanvasManager {
 
 
     }
-
     draw(start, end) {
 
         if (this.modo === "linea") {
@@ -338,7 +332,6 @@ class CanvasManager {
         }
     
     }
-
     renderizarFiguras(){
         const figurasrender = this.figuras;
         this.figuras.forEach(figura => {
@@ -346,7 +339,6 @@ class CanvasManager {
         });
         this.figuras = figurasrender;
     }
-    
     lineTest(){
         console.log("empezando test");
         const ctx = this.getCurrentCanvasContext();
@@ -355,7 +347,37 @@ class CanvasManager {
         // linea.testRendimiento2();
         // linea.testRendimiento3();
     }
-    
+    selectElement(start){
+        const ctx = this.getCurrentCanvasContext();
+        
+        //Buscar la figura mas cercana al punto de inicio
+        let figuraSeleccionada = null;
+        let distanciaMinima = Infinity;
+        this.figuras.forEach(figura => {
+            //Usar isInside para verificar si el punto está dentro de la figura
+            if(figura.isInside(start)){
+                this.figuraSeleccionada = figura;
+                console.log("Figura seleccionada");
+                console.log(figura);
+                return;
+            }
+            else
+            {
+                this.figuraSeleccionada = null;
+                console.log("No hay figura seleccionada");
+            }
+        });
+
+        //Poner un border alrededor de la figura seleccionada con animación
+        if(this.figuraSeleccionada){
+            this.figuraSeleccionada.color = "#FF0000";
+            this.figuraSeleccionada.draw();
+
+
+        }
+
+
+    }
 }
 
 // Exportar la clase

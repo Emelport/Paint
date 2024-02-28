@@ -64,6 +64,28 @@ class Poligonos extends Figura {
         // console.log(this.puntos);
        
     }
+
+    isInside(start){
+        // Calcula si el punto está dentro del polígono
+        const x = start.x;
+        const y = start.y;
+        const perimetro = this.puntos;
+        let inside = false;
+
+        for (let i = 0, j = perimetro.length - 1; i < perimetro.length; j = i++) {
+            const xi = perimetro[i].x;
+            const yi = perimetro[i].y;
+            const xj = perimetro[j].x;
+            const yj = perimetro[j].y;
+
+            const intersect =
+                yi > y !== yj > y &&
+                x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+            if (intersect) inside = !inside;
+        }
+
+        return inside;
+    }
 }
 
 export {Poligonos};

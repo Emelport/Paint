@@ -148,6 +148,17 @@ class Linea extends Figura{
         
     }
 
+    isInside(start) {
+        // Si coincide con alguno de los puntos de la línea
+        for (var i = 0; i < this.puntos.length; i++) {
+            if (start.x === this.puntos[i].x && start.y === this.puntos[i].y) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+
     testRendimiento() {
 
         const canvas = this.ctx.canvas;
@@ -284,7 +295,7 @@ class Linea extends Figura{
 
 
     }
-    testRendimiento2() {
+    testRendimiento2() {    
 
         const canvas = this.ctx.canvas;
         const width = canvas.width;
