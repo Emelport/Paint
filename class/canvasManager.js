@@ -212,63 +212,120 @@ class CanvasManager {
         linea.cleanLine(start, end);
     }
     fillCubeta(start) {
+        console.log("Rellenando");
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
         // Obtener el color del punto de inicio
-        const startColor = ctx.getImageData(start.x, start.y, 1, 1).data;
+        const targetColor = ctx.getImageData(start.x, start.y, 1, 1).data;
         // Obtener el color seleccionado actual
-        const targetColor = this.color;
-        // Verificar si el color de inicio es igual al color seleccionado
-        if (startColor[0] === targetColor[0] && startColor[1] === targetColor[1] && startColor[2] === targetColor[2] && startColor[3] === targetColor[3]) {
-            // Si el color de inicio ya es igual al color seleccionado, no hace falta rellenar
+        const fillColor = this.hexToRgb(this.color);
+      
+        this.floodFill(ctx, Math.round(start.x), Math.round(start.y), targetColor, fillColor);
+    }  
+
+    floodFill(ctx,startX, startY, targetColor, fillColor) {
+        if (targetColor.toString() === fillColor.toString()) {
+            console.log("El pixel de inicio ya es del color de relleno deseado.");
             return;
         }
-        // Llamar al método recursivo para rellenar el área
-        this.floodFill(ctx, start.x, start.y, startColor, targetColor);
-    }  
-    floodFill(ctx, x, y, startColor, targetColor) {
-        // Crear una pila para almacenar los píxeles que deben ser llenados
-        const stack = [];
-        // Empujar el punto de inicio a la pila
-        stack.push([x, y]);
-    
-        // Mientras la pila no esté vacía
-        while (stack.length > 0) {
-            // Sacar el último punto de la pila
-            const [currentX, currentY] = stack.pop();
-    
-            // Obtener el color del píxel actual
-            const pixelColor = ctx.getImageData(currentX, currentY, 1, 1).data;
-    
-            // Verificar si el color del píxel es igual al color de inicio
-            if (this.colorsMatch(pixelColor, startColor)) {
-                // Cambiar el color del píxel al color objetivo
-                ctx.fillStyle = this.color;
-                ctx.fillRect(currentX, currentY, 1, 1);
-    
-                // Empujar los píxeles adyacentes a la pila si no han sido procesados antes
-                this.pushIfValid(stack, ctx, currentX + 1, currentY, startColor);
-                this.pushIfValid(stack, ctx, currentX - 1, currentY, startColor);
-                this.pushIfValid(stack, ctx, currentX, currentY + 1, startColor);
-                this.pushIfValid(stack, ctx, currentX, currentY - 1, startColor);
+       
+
+        var stack = [[startX, startY]];
+        var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+        var pixels = imageData.data;
+        var width = ctx.canvas.width;
+        var height = ctx.canvas.height;
+
+        var getColorIndex = function(x, y) {
+            return (y * width + x) * 4;
+        };
+
+        var isSameColor = function(pixelPos) {
+            return (
+                pixels[pixelPos] === targetColor[0] &&
+                pixels[pixelPos + 1] === targetColor[1] &&
+                pixels[pixelPos + 2] === targetColor[2] &&
+                pixels[pixelPos + 3] === targetColor[3]
+            );
+        };
+
+        var setColor = function(pixelPos) {
+            pixels[pixelPos] = fillColor[0];
+            pixels[pixelPos + 1] = fillColor[1];
+            pixels[pixelPos + 2] = fillColor[2];
+            pixels[pixelPos + 3] = fillColor[3];
+        };
+
+        while (stack.length) {
+            var newPos, x, y, pixelPos, reachLeft, reachRight;
+
+            newPos = stack.pop();
+            x = newPos[0];
+            y = newPos[1];
+
+            pixelPos = getColorIndex(x, y);
+
+            while (y-- >= 0 && isSameColor(pixelPos)) {
+                pixelPos -= width * 4;
+            }
+            pixelPos += width * 4;
+
+            reachLeft = false;
+            reachRight = false;
+
+            while (y++ < height - 1 && isSameColor(pixelPos)) {
+                setColor(pixelPos);
+
+                if (x > 0) {
+                    if (isSameColor(pixelPos - 4)) {
+                        if (!reachLeft) {
+                            stack.push([x - 1, y]);
+                            reachLeft = true;
+                        }
+                    } else if (reachLeft) {
+                        reachLeft = false;
+                    }
+                }
+
+                if (x < width - 1) {
+                    if (isSameColor(pixelPos + 4)) {
+                        if (!reachRight) {
+                            stack.push([x + 1, y]);
+                            reachRight = true;
+                        }
+                    } else if (reachRight) {
+                        reachRight = false;
+                    }
+                }
+
+                pixelPos += width * 4;
             }
         }
+
+        ctx.putImageData(imageData, 0, 0);
     }
-    colorsMatch(color1, color2) {
-        // Verificar si dos colores son iguales
-        return color1[0] === color2[0] && color1[1] === color2[1] && color1[2] === color2[2] && color1[3] === color2[3];
+
+
+    hexToRgb(hex) {
+        //Recibe un color en formato hexadecimal y lo convierte a RGB
+        //Ejemplo: #FFFFFF -> [255, 255, 255, 255]
+        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+            return r + r + g + g + b + b;
+        });
+
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? [
+            parseInt(result[1], 16),
+            parseInt(result[2], 16),
+            parseInt(result[3], 16),
+            255
+        ] : null;
     }
-    pushIfValid(stack, ctx, x, y, startColor) {
-        // Verificar si las coordenadas están dentro del canvas
-        if (x >= 0 && x < ctx.canvas.width && y >= 0 && y < ctx.canvas.height) {
-            // Verificar si el color del píxel es igual al color de inicio
-            const pixelColor = ctx.getImageData(x, y, 1, 1).data;
-            if (this.colorsMatch(pixelColor, startColor)) {
-                // Empujar las coordenadas a la pila si el color coincide
-                stack.push([x, y]);
-            }
-        }
-    }
+
+
+
+
     drawPreview(start, end) {
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
@@ -347,6 +404,12 @@ class CanvasManager {
         // linea.testRendimiento2();
         // linea.testRendimiento3();
     }
+
+    getColorAtPixel(x, y) {
+        var imageData = ctx.getImageData(x, y, 1, 1);
+        var data = imageData.data;
+        return [data[0], data[1], data[2], data[3]]; // RGBA
+    }
     selectElement(start){
         const ctx = this.getCurrentCanvasContext();
         
@@ -370,9 +433,10 @@ class CanvasManager {
 
         //Poner un border alrededor de la figura seleccionada con animación
         if(this.figuraSeleccionada){
-            this.figuraSeleccionada.color = "#FF0000";
-            this.figuraSeleccionada.draw();
-
+            // this.renderizarFiguras();
+            // this.figuraSeleccionada.color = "#FF0000";
+            // this.figuraSeleccionada.draw();
+            console.log(this.figuraSeleccionada)
 
         }
 
