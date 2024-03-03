@@ -129,6 +129,10 @@ document.addEventListener("DOMContentLoaded", function () {
         canvasManager.setDrawing(false);
     });
     //***************************BOTONES ****************/
+    //undo
+    document.getElementById("undo",function (event){
+        canvasManager.history.undo();
+    });
     
 
     //*************************** Estados **************

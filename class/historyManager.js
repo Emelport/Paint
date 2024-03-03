@@ -17,11 +17,10 @@ class HistoryManager {
             this.undoAction(action); // Deshacer la acción
         }
     }
-
     // Método para deshacer una acción específica
     undoAction(action) {
-        // Lógica para deshacer la acción
-        // Por ejemplo, si action es dibujar una línea, eliminar esa línea del lienzo
+        // Copiar el redostack en el undostack y quitar el ultimo elemento
+        this.undoStack.push(this.redoStack.pop());
     }
 
     // Método para rehacer la última acción deshecha
@@ -35,6 +34,37 @@ class HistoryManager {
 
     // Método para volver a realizar una acción específica
     redoAction(action) {
-        // Lógica para volver a realizar la acción
+
+    }
+
+    getUndoStack() {
+        return this.undoStack;
+    }
+    getRedoStack() {
+        return this.redoStack;
+    }   
+    addActionToHistory(dato,tipo) {
+        let elemento = {};
+        elemento.dato = dato;
+        elemento.tipo = tipo;
+        this.redoStack.push(elemento);
+
+    }
+
+    renderizar(ctx){
+        const actionsRender = this.getRedoStack();
+        // console.log(actionsRender);
+        actionsRender.forEach(action => {
+            console.log(action.tipo);
+            if (action.tipo === "figure"){
+                action.dato.draw(); 
+            }
+            else if (action.tipo === "fill"){
+                ctx.putImageData(action.dato, 0, 0);
+            }
+
+        });
     }
 }
+
+export { HistoryManager}

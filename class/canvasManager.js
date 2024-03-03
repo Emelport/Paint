@@ -4,6 +4,7 @@ import {Cuadrado} from "../class/cuadrado.js";
 import {Circulo} from "../class/circulo.js";
 import {Poligonos} from "../class/poligonos.js";   
 import {Elipse} from "../class/elipse.js";
+import {HistoryManager} from "../class/historyManager.js"
 
 class CanvasManager {
     constructor() {
@@ -27,6 +28,7 @@ class CanvasManager {
         this.setupCanvas();
         this.setupListeners();
 
+        this.history = new HistoryManager();
         this.figuras = [];
     }
     setupCanvas() {
@@ -222,14 +224,12 @@ class CanvasManager {
       
         this.floodFill(ctx, Math.round(start.x), Math.round(start.y), targetColor, fillColor);
     }  
-
     floodFill(ctx,startX, startY, targetColor, fillColor) {
         if (targetColor.toString() === fillColor.toString()) {
             console.log("El pixel de inicio ya es del color de relleno deseado.");
             return;
         }
-       
-
+    
         var stack = [[startX, startY]];
         var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
         var pixels = imageData.data;
@@ -301,11 +301,9 @@ class CanvasManager {
                 pixelPos += width * 4;
             }
         }
-
+        this.history.addActionToHistory(imageData, "fill");
         ctx.putImageData(imageData, 0, 0);
     }
-
-
     hexToRgb(hex) {
         //Recibe un color en formato hexadecimal y lo convierte a RGB
         //Ejemplo: #FFFFFF -> [255, 255, 255, 255]
@@ -322,10 +320,6 @@ class CanvasManager {
             255
         ] : null;
     }
-
-
-
-
     drawPreview(start, end) {
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
@@ -364,19 +358,26 @@ class CanvasManager {
         if (this.modo === "linea") {
             const line = this.drawLine(start, end);
             this.figuras.push(line);
+            this.history.addActionToHistory(line, "figure");
 
         } else if (this.modo === "cuadrado") {
             const square = this.drawSquare(start, end);
             this.figuras.push(square);
+            this.history.addActionToHistory(square, "figure");
+
         } else if (this.modo === "circulo") {
             const circle = this.drawCircle(start, end);
             this.figuras.push(circle);
+            this.history.addActionToHistory(circle, "figure");
         } else if (this.modo === "poligono") {
             const poligonos = this.drawPolygon(start, end);
             this.figuras.push(poligonos);
+            this.history.addActionToHistory(poligonos, "figure");
+
         } else if (this.modo === "elipse") {
             const elipse = this.drawElips(start, end);
             this.figuras.push(elipse);
+            this.history.addActionToHistory(elipse, "figure");
         }
         else if (this.modo === "lapiz") {
             const F = new Figura(ctx, this.color, this.grosor);
@@ -386,15 +387,14 @@ class CanvasManager {
             const ctx = this.getCurrentCanvasContext();
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); 
             this.figuras = [];
+            this.history.undoStack = [];
+            this.history.redoStack = [];
+
         }
     
     }
     renderizarFiguras(){
-        const figurasrender = this.figuras;
-        this.figuras.forEach(figura => {
-            figura.draw();
-        });
-        this.figuras = figurasrender;
+       this.history.renderizar(this.getCurrentCanvasContext());
     }
     lineTest(){
         console.log("empezando test");
@@ -404,7 +404,6 @@ class CanvasManager {
         // linea.testRendimiento2();
         // linea.testRendimiento3();
     }
-
     getColorAtPixel(x, y) {
         var imageData = ctx.getImageData(x, y, 1, 1);
         var data = imageData.data;
