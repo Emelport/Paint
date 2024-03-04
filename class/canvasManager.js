@@ -29,6 +29,7 @@ class CanvasManager {
         this.setupListeners();
 
         this.history = new HistoryManager();
+        this.history.setContext(this.layer1Ctx);
         this.figuras = [];
     }
     setupCanvas() {
@@ -57,6 +58,7 @@ class CanvasManager {
     setCurrentCanvas(canvasId) {
         // Establece el canvas actual en función del ID proporcionado
         this.currentCanvas = document.getElementById(canvasId);
+
         //ocultar los otros canvas
         if (canvasId === "layer1Canvas") {
             document.getElementById("layer2Canvas").style.display = "none";
@@ -328,25 +330,25 @@ class CanvasManager {
         // Dibujar la figura correspondiente
         if (this.modo === "linea") {
             const line = this.drawLine(start, end);
-            this.renderizarFiguras();
+            this.history.renderizar(this.getCurrentCanvasContext());
         } else if (this.modo === "cuadrado") {
             const square = this.drawSquare(start, end);
-            this.renderizarFiguras();   
+            this.history.renderizar(this.getCurrentCanvasContext());
         } else if (this.modo === "circulo") {
             const circle = this.drawCircle(start, end);
-            this.renderizarFiguras();
+            this.history.renderizar(this.getCurrentCanvasContext());
 
         } else if (this.modo    === "poligono") {
             const poligonos = this.drawPolygon(start, end);
-            this.renderizarFiguras();
+            this.history.renderizar(this.getCurrentCanvasContext());
         } else if (this.modo === "elipse") {
             const elipse = this.drawElips(start, end);
-            this.renderizarFiguras();
+            this.history.renderizar(this.getCurrentCanvasContext());
         }
         else if (this.modo === "lapiz") {
             const F = new Figura(ctx, this.color, this.grosor);
             F.drawPixel(end);
-            this.renderizarFiguras();
+            this.history.renderizar(this.getCurrentCanvasContext());
         }
 
 
@@ -393,9 +395,7 @@ class CanvasManager {
         }
     
     }
-    renderizarFiguras(){
-       this.history.renderizar(this.getCurrentCanvasContext());
-    }
+
     lineTest(){
         console.log("empezando test");
         const ctx = this.getCurrentCanvasContext();

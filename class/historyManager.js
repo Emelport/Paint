@@ -1,8 +1,15 @@
+import {CanvasManager} from './canvasManager.js';
+
 class HistoryManager {
   constructor() {
     this.undoStack = []; // Historial de acciones para deshacer
     this.redoStack = []; // Historial de acciones para rehacer
+    this.ctx = null;
   }
+
+    setContext(ctx) {
+        this.ctx = ctx;
+    }
 
    // Método para agregar una acción al historial de acciones
     addActionToHistory(action) {
@@ -16,11 +23,13 @@ class HistoryManager {
             this.redoStack.push(action); // Agregar la acción al historial de rehacer
             this.undoAction(action); // Deshacer la acción
         }
+     
     }
     // Método para deshacer una acción específica
     undoAction(action) {
         // Copiar el redostack en el undostack y quitar el ultimo elemento
         this.undoStack.push(this.redoStack.pop());
+        this.renderizar(this.ctx);
     }
 
     // Método para rehacer la última acción deshecha
@@ -33,8 +42,9 @@ class HistoryManager {
     }
 
     // Método para volver a realizar una acción específica
-    redoAction(action) {
-
+    redoAction(action) {  
+        this.redoStack.push(this.undoStack.pop());
+        this.renderizar(this.ctx);
     }
 
     getUndoStack() {

@@ -129,11 +129,22 @@ document.addEventListener("DOMContentLoaded", function () {
         canvasManager.setDrawing(false);
     });
     //***************************BOTONES ****************/
-    //undo
-    document.getElementById("undo",function (event){
+   
+    // <div class="undoRedo">
+    //     <button id="undo">Deshacer</button>
+    //     <button id="redo">Rehacer</button>
+    //     <button id="lineTest">Test Lineas</button>
+    // </div>
+
+    // Agrega un event listener para el botón de deshacer
+    document.getElementById("undo").onclick = function () {
         canvasManager.history.undo();
-    });
-    
+    };
+    // Agrega un event listener para el botón de rehacer
+    document.getElementById("redo").onclick = function () {
+        canvasManager.redo();
+    };
+
 
     //*************************** Estados **************
     
