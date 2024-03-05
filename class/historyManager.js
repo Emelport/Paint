@@ -18,35 +18,18 @@ class HistoryManager {
 
     // Método para deshacer la última acción
     undo() {    
-        if (this.undoStack.length > 0) {
-            const action = this.undoStack.pop(); // Obtener la última acción
-            this.redoStack.push(action); // Agregar la acción al historial de rehacer
-            this.undoAction(action); // Deshacer la acción
-        }
-     
-    }
-    // Método para deshacer una acción específica
-    undoAction(action) {
-        // Copiar el redostack en el undostack y quitar el ultimo elemento
-        this.undoStack.push(this.redoStack.pop());
-        this.renderizar(this.ctx);
-    }
+        console.log("deshacer")
+        this.undoStack = this.redoStack
+        this.undoStack.pop()
+        console.log(this.undoStack)
+        this.renderizar(this.ctx,2);
 
+    }
     // Método para rehacer la última acción deshecha
     redo() {
-        if (this.redoStack.length > 0) {
-            const action = this.redoStack.pop(); // Obtener la última acción deshecha
-            this.undoStack.push(action); // Agregar la acción nuevamente al historial de deshacer
-            this.redoAction(action); // Volver a realizar la acción
-        }
+       console.log("rehacer")
+       this.renderizar(this.ctx,1)
     }
-
-    // Método para volver a realizar una acción específica
-    redoAction(action) {  
-        this.redoStack.push(this.undoStack.pop());
-        this.renderizar(this.ctx);
-    }
-
     getUndoStack() {
         return this.undoStack;
     }
@@ -58,23 +41,44 @@ class HistoryManager {
         elemento.dato = dato;
         elemento.tipo = tipo;
         this.redoStack.push(elemento);
-
     }
+    renderizar(ctx,option) {
+        console.log("renderizar")
+        //Limpiar el canvas
 
-    renderizar(ctx){
-        const actionsRender = this.getRedoStack();
-        // console.log(actionsRender);
+        let actionsRender = []
+        
+        if(option == 1)
+        {
+            console.log()
+            actionsRender = this.redoStack
+        }
+        else
+        {
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            actionsRender = this.undoStack
+        }
+        
         actionsRender.forEach(action => {
-            console.log(action.tipo);
-            if (action.tipo === "figure"){
+            if (action.tipo === "figure") {
                 action.dato.draw(); 
-            }
-            else if (action.tipo === "fill"){
-                ctx.putImageData(action.dato, 0, 0);
-            }
+            } else if (action.tipo === "fill") {
+                // Crear un nuevo canvas temporal
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = ctx.canvas.width;
+                tempCanvas.height = ctx.canvas.height;
 
+                // Aplicar el relleno en el nuevo canvas temporal
+                tempCtx.putImageData(action.dato, 0, 0);
+
+                // Dibujar el canvas temporal en el contexto principal
+                ctx.drawImage(tempCanvas, 0, 0);
+            }
         });
-    }
+    }   
+
+    
 }
 
 export { HistoryManager}

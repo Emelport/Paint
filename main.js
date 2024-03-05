@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     // Agrega un event listener para el botón de rehacer
     document.getElementById("redo").onclick = function () {
-        canvasManager.redo();
+        canvasManager.history.redo();
     };
 
 

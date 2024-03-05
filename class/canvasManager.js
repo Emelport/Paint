@@ -38,8 +38,8 @@ class CanvasManager {
 
         this.gridCtx.canvas.width = 1024;
         this.gridCtx.canvas.height = 768;
-        this.layer1Ctx.canvas.width = 1000;
-        this.layer1Ctx.canvas.height = 1000;
+        this.layer1Ctx.canvas.width = 1024;
+        this.layer1Ctx.canvas.height = 768;
         this.layer2Ctx.canvas.width = 1024;
         this.layer2Ctx.canvas.height = 768;
         this.layer3Ctx.canvas.width = 1024;
@@ -330,25 +330,25 @@ class CanvasManager {
         // Dibujar la figura correspondiente
         if (this.modo === "linea") {
             const line = this.drawLine(start, end);
-            this.history.renderizar(this.getCurrentCanvasContext());
+            this.history.renderizar(this.getCurrentCanvasContext(),1);
         } else if (this.modo === "cuadrado") {
             const square = this.drawSquare(start, end);
-            this.history.renderizar(this.getCurrentCanvasContext());
+            this.history.renderizar(this.getCurrentCanvasContext(),1);
         } else if (this.modo === "circulo") {
             const circle = this.drawCircle(start, end);
-            this.history.renderizar(this.getCurrentCanvasContext());
+            this.history.renderizar(this.getCurrentCanvasContext(),1);
 
         } else if (this.modo    === "poligono") {
             const poligonos = this.drawPolygon(start, end);
-            this.history.renderizar(this.getCurrentCanvasContext());
+            this.history.renderizar(this.getCurrentCanvasContext(),1);
         } else if (this.modo === "elipse") {
             const elipse = this.drawElips(start, end);
-            this.history.renderizar(this.getCurrentCanvasContext());
+            this.history.renderizar(this.getCurrentCanvasContext(),1);
         }
         else if (this.modo === "lapiz") {
             const F = new Figura(ctx, this.color, this.grosor);
             F.drawPixel(end);
-            this.history.renderizar(this.getCurrentCanvasContext());
+            this.history.renderizar(this.getCurrentCanvasContext(),1);
         }
 
 
@@ -391,7 +391,6 @@ class CanvasManager {
             this.figuras = [];
             this.history.undoStack = [];
             this.history.redoStack = [];
-
         }
     
     }
