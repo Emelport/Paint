@@ -219,13 +219,16 @@ class CanvasManager {
         console.log("Rellenando");
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
-        // Obtener el color del punto de inicio
-        const targetColor = ctx.getImageData(start.x, start.y, 1, 1).data;
-        // Obtener el color seleccionado actual
-        const fillColor = this.hexToRgb(this.color);
-      
-        this.floodFill(ctx, Math.round(start.x), Math.round(start.y), targetColor, fillColor);
+        const color = this.hexToRgb(this.color)
+        const targetColor = null
+        //Recorrer el arreglo de figuras desde el ultimo agregado hacia atras para ver si pertenece a esa figura utilizando el isinside
+        let figuraSeleccionada = this.history.seleccionarFigura(ctx,start);
+        if (figuraSeleccionada){
+            figuraSeleccionada.rellenar(ctx,targetColor,this.color)
+            this.history.addActionToHistory()
+        }
     }  
+    
     floodFill(ctx,startX, startY, targetColor, fillColor) {
         if (targetColor.toString() === fillColor.toString()) {
             console.log("El pixel de inicio ya es del color de relleno deseado.");
@@ -354,7 +357,7 @@ class CanvasManager {
 
 
 
-    }
+    }   
     draw(start, end) {
 
         if (this.modo === "linea") {

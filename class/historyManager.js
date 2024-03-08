@@ -77,6 +77,43 @@ class HistoryManager {
             }
         });
     }   
+    hexToRgb(hex) {
+        //Recibe un color en formato hexadecimal y lo convierte a RGB
+        //Ejemplo: #FFFFFF -> [255, 255, 255, 255]
+        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+            return r + r + g + g + b + b;
+        });
+
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? [
+            parseInt(result[1], 16),
+            parseInt(result[2], 16),
+            parseInt(result[3], 16),
+            255
+        ] : null;
+    }
+
+    seleccionarFigura(ctx,start,color){
+        //Seleccionar Figura
+        //Recorrer el arreglo de acciones del tipo figura para saber cual es la ultima
+        let actionsRender = []
+        let figuraSeleccionada = null
+        actionsRender = this.redoStack
+   
+        actionsRender.forEach(action => {
+            if (action.tipo === "figure") {
+                if (action.dato.isInside(start)){
+                    console.log(action.dato)
+                    figuraSeleccionada = action.dato
+                }
+            } else if (action.tipo === "fill") {
+  
+            }
+        });
+
+        return figuraSeleccionada
+    }
 
     
 }

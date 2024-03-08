@@ -5,11 +5,9 @@ class Figura {
         this.grosor = grosor;
         // Arreglo de puntos
         this.puntos = [];
+        this.puntosInternos = [];
         // Crear un canvas temporal reutilizable
-        this.tempCanvas = document.createElement('canvas');
-        this.tempCtx = this.tempCanvas.getContext('2d');
-        this.tempCanvas.width = 1 + grosor;
-        this.tempCanvas.height = 1 + grosor;
+
     }
 
     // Dibujar la figura (método abstracto)
@@ -21,12 +19,14 @@ class Figura {
     drawPixel(x, y) {
         var halfThickness = Math.floor(this.grosor / 2);
         
-        // Dibujar el pixel en el canvas temporal
-        this.tempCtx.fillStyle = this.color;
-        this.tempCtx.fillRect(0, 0, 1 + halfThickness * 2, 1 + halfThickness * 2);
-        
-        // Pegar el pixel en el canvas principal
-        this.ctx.drawImage(this.tempCanvas, x - halfThickness, y - halfThickness);
+        // Dibujar cada pixel 
+        for (var i = -halfThickness; i <= halfThickness; i++) {
+            for (var j = -halfThickness; j <= halfThickness; j++) {
+                // Pintar el pixel
+                this.ctx.fillStyle = this.color;
+                this.ctx.fillRect(x + i, y + j, 1, 1);
+            }
+        }
     }
 
     // Verificar si un punto está dentro de la figura (método abstracto)
@@ -43,6 +43,33 @@ class Figura {
     setColor(newColor) {
         this.color = newColor;
     }
+
+    rellenar(ctx,targetColor,fillColor){
+        this.ctx = ctx
+
+        if (targetColor == fillColor){
+            console.log("Ya tiene ese color", targetColor,fillColor)
+            return
+
+        }
+        console.log(fillColor)
+        this.color = fillColor
+        //Dibujar todos los puntos internos
+        this.puntosInternos.forEach(punto => {
+            this.drawPixel(punto.x, punto.y);
+        });
+    }
+
+    isInside(point) {
+        for (let i = 0; i < this.puntosInternos.length; i++) {
+            if (point.x === this.puntosInternos[i].x && point.y === this.puntosInternos[i].y) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+
 
     // Establecer el grosor del trazo
     setGrosor(newGrosor) {

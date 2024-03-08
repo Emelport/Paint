@@ -60,31 +60,24 @@ class Poligonos extends Figura {
             var linea = new Linea(this.ctx, this.color, this.grosor, start, end);
             this.puntos.push(linea.draw());
         }
-
-        // console.log(this.puntos);
-       
+        
     }
 
-    isInside(start){
-        // Calcula si el punto está dentro del polígono
-        const x = start.x;
-        const y = start.y;
+    calcularPuntosInternos() {
+        // Calcular los puntos internos a partir de los puntos del perímetro
         const perimetro = this.puntos;
-        let inside = false;
-
-        for (let i = 0, j = perimetro.length - 1; i < perimetro.length; j = i++) {
-            const xi = perimetro[i].x;
-            const yi = perimetro[i].y;
-            const xj = perimetro[j].x;
-            const yj = perimetro[j].y;
-
-            const intersect =
-                yi > y !== yj > y &&
-                x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
-            if (intersect) inside = !inside;
+        const minX = Math.min(...perimetro.map(p => p.x));
+        const maxX = Math.max(...perimetro.map(p => p.x));
+        const minY = Math.min(...perimetro.map(p => p.y));
+        const maxY = Math.max(...perimetro.map(p => p.y));
+        for (let x = minX; x < maxX; x++) {
+            for (let y = minY; y < maxY; y++) {
+                if (this.isInside({ x, y })) {
+                    this.puntosInternos.push({ x, y });
+                }
+            }
         }
 
-        return inside;
     }
 }
 
