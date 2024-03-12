@@ -3,11 +3,10 @@ class Figura {
         this.ctx = ctx;
         this.color = color;
         this.grosor = grosor;
-        // Arreglo de puntos
         this.puntos = [];
         this.puntosInternos = [];
-        // Crear un canvas temporal reutilizable
-
+        this.isfiller = false;
+        this.colorfill = null;
     }
 
     // Dibujar la figura (método abstracto)
@@ -15,19 +14,25 @@ class Figura {
         // Implementar en las clases hijas
     }
 
-    // Pintar un punto
     drawPixel(x, y) {
-        var halfThickness = Math.floor(this.grosor / 2);
-        
-        // Dibujar cada pixel 
-        for (var i = -halfThickness; i <= halfThickness; i++) {
-            for (var j = -halfThickness; j <= halfThickness; j++) {
-                // Pintar el pixel
-                this.ctx.fillStyle = this.color;
-                this.ctx.fillRect(x + i, y + j, 1, 1);
-            }
-        }
+        var imageData = this.ctx.createImageData(1, 1); // Crea una nueva imagen de 1x1 píxel
+    
+        // Obtiene los valores RGBA del color
+        var hex = this.color.replace('#', '');
+        var r = parseInt(hex.substring(0, 2), 16);
+        var g = parseInt(hex.substring(2, 4), 16);
+        var b = parseInt(hex.substring(4, 6), 16);
+    
+        // Establece los valores RGBA en la imagen
+        imageData.data[0] = r;
+        imageData.data[1] = g;
+        imageData.data[2] = b;
+        imageData.data[3] = 255; // Opacidad al 100%
+    
+        // Dibuja la imagen en el lienzo
+        this.ctx.putImageData(imageData, x, y);
     }
+    
 
     // Verificar si un punto está dentro de la figura (método abstracto)
     isInside(start) {

@@ -219,7 +219,6 @@ class CanvasManager {
         console.log("Rellenando");
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
-        const color = this.hexToRgb(this.color)
         const targetColor = null
         //Recorrer el arreglo de figuras desde el ultimo agregado hacia atras para ver si pertenece a esa figura utilizando el isinside
         let figuraSeleccionada = this.history.seleccionarFigura(ctx,start);
@@ -228,7 +227,6 @@ class CanvasManager {
             this.history.addActionToHistory()
         }
     }  
-    
     floodFill(ctx,startX, startY, targetColor, fillColor) {
         if (targetColor.toString() === fillColor.toString()) {
             console.log("El pixel de inicio ya es del color de relleno deseado.");
@@ -333,20 +331,19 @@ class CanvasManager {
         // Dibujar la figura correspondiente
         if (this.modo === "linea") {
             const line = this.drawLine(start, end);
-            this.history.renderizar(this.getCurrentCanvasContext(),1);
+            this.preview(line);
         } else if (this.modo === "cuadrado") {
             const square = this.drawSquare(start, end);
-            this.history.renderizar(this.getCurrentCanvasContext(),1);
+            this.preview(square);
         } else if (this.modo === "circulo") {
             const circle = this.drawCircle(start, end);
-            this.history.renderizar(this.getCurrentCanvasContext(),1);
-
+            this.preview(circle);
         } else if (this.modo    === "poligono") {
             const poligonos = this.drawPolygon(start, end);
-            this.history.renderizar(this.getCurrentCanvasContext(),1);
+            this.preview(poligonos)
         } else if (this.modo === "elipse") {
             const elipse = this.drawElips(start, end);
-            this.history.renderizar(this.getCurrentCanvasContext(),1);
+            this.preview(elipse);
         }
         else if (this.modo === "lapiz") {
             const F = new Figura(ctx, this.color, this.grosor);
@@ -354,10 +351,13 @@ class CanvasManager {
             this.history.renderizar(this.getCurrentCanvasContext(),1);
         }
 
-
-
-
     }   
+
+    preview(figura){
+        figura.drawPixel(figura.puntos)
+        figura.drawPixel(figura.puntosInternos)
+
+    }
     draw(start, end) {
 
         if (this.modo === "linea") {
