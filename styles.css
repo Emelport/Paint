@@ -1,71 +1,105 @@
-.header{
-    background-color: #333;
-    color: #fff;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    height: 1rem;
-    padding-left: 1rem;
-    /* Fuente divertida */
-    font-family: 'Lobster', cursive;
-    display: flex;
-}
-
-.undoRedo{
-    margin-left: auto;
-    margin-right: 1rem;
-}
-
-.container{
-    margin-left: 64px;
-    width: 100%;
-}
-
-.canvas{
-    background-color: #fff;
-    border: 1px solid #ccc;
-    margin: 0 auto;
-}
-
-.toolbox{
-    /* Barra vertical absoluta */
-    position: absolute;
-    top: 3rem;
-    left: 0;
-    bottom: 0;
-    /* Centrar */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #ccc;
-    /* Barra vertical */
-    /* border-right: 1px solid #333; */
-}
-
-/* Imagenes de toolbox  32x32 */
-.toolbox img {
-    width: 32px;
-    height: 32px;
-    padding: 5px;
-}
-
-/* Hover */
-.toolbox img:hover {
-    background-color: #f1f1f1;
-    cursor: pointer;
-    transform: scale(1.2);
-}   
-
-/* Body 100% */
-body{
+/* Estilo general */
+body {
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #3a3838;
 }
 
-.range{
-    /* No mas de 60 pixeles */
-    max-width: 60px;
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
+/* 
+.header {
+    background-color: #806868;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+} */
+
+.toolbox {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px;
+    background-color: #eee;
+    border-bottom: 1px solid #ccc;
+}
+
+.tool {
+    margin-right: 10px;
+}
+
+.canvas-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.canvas {
+    border: 1px solid #ccc;
+    /* Tenga siempre la opacidad maxima todo lo que se dibuje ahi */
+    background-color: rgba(255, 255, 255, 0); /* Color blanco con opacidad alfa 0 */
+    
+}
+
+.undoRedo {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Estilos específicos para la disposición que solicitaste */
+.toolbox {
+    overflow-x: auto;
+    flex-shrink: 0;
+}
+
+.canvas-container {
+    /* oculto */
+    display: none;
+    position: relative;
+}
+
+.toolbox {
+    /* Centrado horizontaly vertical */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: #eee;
+    z-index: 1;
+}
+
+/* escalar 1.2  cuando el mouse pasa encima .tool .colorTool .grosorTool */
+.tool:hover {
+    transform: scale(1.2);
+    /* puntero */
+    cursor: pointer;
+}
+.canvas-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.canvas {
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+.undoRedo {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+/* Estilos para el tamaño de las imágenes */
+.tool img {
+    width: 30px; /* Ajusta el tamaño de las imágenes según sea necesario */
+    height: 30px; /* Ajusta el tamaño de las imágenes según sea necesario */
+}
+

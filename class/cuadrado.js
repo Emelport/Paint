@@ -13,32 +13,30 @@ class Cuadrado extends Figura {
         this.drawOutline(this.start, this.end);
     }
     // Dibujar el contorno del cuadrado
+   // Método para dibujar el contorno del rectángulo
     drawOutline(start, end) {
-        const cuadradoStart = {
-            x: Math.min(start.x, end.x),
-            y: Math.min(start.y, end.y)
-        };
+        // Obtener las coordenadas del rectángulo
+        const rectStartX = Math.min(start.x, end.x);
+        const rectStartY = Math.min(start.y, end.y);
+        const rectEndX = Math.max(start.x, end.x);
+        const rectEndY = Math.max(start.y, end.y);
 
-        const cuadradoEnd = {
-            x: Math.max(start.x, end.x),
-            y: Math.max(start.y, end.y)
-        };
-
-        // Dibujar el contorno del cuadrado y calcular puntos internos
-        for (let x = cuadradoStart.x; x <= cuadradoEnd.x; x++) {
-            for (let y = cuadradoStart.y; y <= cuadradoEnd.y; y++) {
-                // Dibujar el contorno
-                if (x === cuadradoStart.x || x === cuadradoEnd.x || y === cuadradoStart.y || y === cuadradoEnd.y) {
+        // Dibujar el contorno del rectángulo y calcular puntos
+        for (let x = rectStartX; x <= rectEndX; x++) {
+            for (let y = rectStartY; y <= rectEndY; y++) {
+                // Dibujar el contorno y calcular puntos
+                if (x === rectStartX || x === rectEndX || y === rectStartY || y === rectEndY) {
                     this.drawPixel(x, y);
                     this.puntos.push({ x: x, y: y });
                 }
                 // Calcular puntos internos
-                else if (x > cuadradoStart.x && x < cuadradoEnd.x && y > cuadradoStart.y && y < cuadradoEnd.y) {
+                else {
                     this.puntosInternos.push({ x: x, y: y });
                 }
             }
         }
     }
+
     // 
     clean() {
        //Por cada punto de la linea

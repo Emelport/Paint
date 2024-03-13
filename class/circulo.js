@@ -64,26 +64,32 @@ class Circulo extends Figura {
     let P = 1 - radius;
 
     while (x >= y) {
-      this.drawPoints(center.x, center.y, x, y);
-      if (P <= 0) {
-        P = P + 2 * y + 1;
-      } else {
-        x--;
-        P = P + 2 * y - 2 * x + 1;
-      }
-      y++;
+        this.drawPoints(center.x, center.y, x, y);
+        if (P <= 0) {
+            P = P + 2 * y + 1;
+        } else {
+            x--;
+            P = P + 2 * y - 2 * x + 1;
+        }
+        y++;
     }
     
-    // Llenar this.puntosinternos con los puntos dentro del círculo
-    this.puntosinternos = [];
-    for (let i = 0; i < this.ctx.canvas.width; i++) {
-        for (let j = 0; j < this.ctx.canvas.height; j++) {
-            if (Math.pow(i - center.x, 2) + Math.pow(j - center.y, 2) <= Math.pow(radius, 2)) {
-                this.puntosInternos.push({ x: i, y: j });
+    // Limpiar la lista de puntos internos
+    this.puntosInternos = [];
+
+    // Calcular los puntos internos utilizando la ecuación del círculo
+    for (let i = -radius; i <= radius; i++) {
+        for (let j = -radius; j <= radius; j++) {
+            // Calcular la distancia desde el punto al centro del círculo
+            const distanceSquared = i * i + j * j;
+            if (distanceSquared <= radius * radius) {
+                // Si la distancia es menor o igual al radio del círculo, agregar el punto a la lista de puntos internos
+                this.puntosInternos.push({ x: center.x + i, y: center.y + j });
             }
         }
     }
-  }
+}
+
 
 
 }

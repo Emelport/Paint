@@ -5,40 +5,40 @@ class Figura {
         this.grosor = grosor;
         this.puntos = [];
         this.puntosInternos = [];
-        this.isfiller = false;
-        this.colorfill = null;
+        this.estaRellena = false;
+        this.colorRelleno = null;
     }
 
     // Dibujar la figura (método abstracto)
     draw() {
         // Implementar en las clases hijas
     }
-
     drawPixel(x, y) {
-        var imageData = this.ctx.createImageData(1, 1); // Crea una nueva imagen de 1x1 píxel
+        // Obtener el contexto del lienzo
+        const ctx = this.ctx;
     
-        // Obtiene los valores RGBA del color
-        var hex = this.color.replace('#', '');
-        var r = parseInt(hex.substring(0, 2), 16);
-        var g = parseInt(hex.substring(2, 4), 16);
-        var b = parseInt(hex.substring(4, 6), 16);
+        // Obtener el color y el grosor
+        const color = this.color;
+        const grosor = this.grosor;
     
-        // Establece los valores RGBA en la imagen
-        imageData.data[0] = r;
-        imageData.data[1] = g;
-        imageData.data[2] = b;
-        imageData.data[3] = 255; // Opacidad al 100%
+        // Guardar el estado actual del contexto
+        ctx.save();
     
-        // Dibuja la imagen en el lienzo
-        this.ctx.putImageData(imageData, x, y);
+        // Ajustar el canal alfa del color para que sea el más bajo posible (0)
+        const colorWithAlpha = color.replace(/[^,]+(?=\))/, '0');
+    
+        // Establecer el color de relleno
+        ctx.fillStyle = colorWithAlpha;
+    
+        // Dibujar un rectángulo de un solo píxel en la posición dada
+        ctx.fillRect(x, y, grosor, grosor);
+    
+        // Restaurar el estado del contexto
+        ctx.restore();
     }
     
-
-    // Verificar si un punto está dentro de la figura (método abstracto)
-    isInside(start) {
-        // Implementar en las clases hijas
-    }
-
+    
+    
     // Establecer el contexto de dibujo
     setContext(newContext) {
         this.ctx = newContext;
@@ -50,24 +50,30 @@ class Figura {
     }
 
     rellenar(ctx,targetColor,fillColor){
-        this.ctx = ctx
+        this.estaRellena = true
+        if (this.estaRellena){
 
-        if (targetColor == fillColor){
-            console.log("Ya tiene ese color", targetColor,fillColor)
-            return
+            this.ctx = ctx
 
+            if (targetColor == fillColor){
+                console.log("Ya tiene ese color", targetColor,fillColor)
+                this.estaRellena = false
+                return
+            }
+            console.log(fillColor)
+            this.color = fillColor
+            //Dibujar todos los puntos internos
+            this.puntosInternos.forEach(punto => {
+                this.drawPixel(punto.x, punto.y);
+            });
         }
-        console.log(fillColor)
-        this.color = fillColor
-        //Dibujar todos los puntos internos
-        this.puntosInternos.forEach(punto => {
-            this.drawPixel(punto.x, punto.y);
-        });
     }
-
     isInside(point) {
+        // Verificar si el punto está dentro de la figura considerando un margen de ±0.5
         for (let i = 0; i < this.puntosInternos.length; i++) {
-            if (point.x === this.puntosInternos[i].x && point.y === this.puntosInternos[i].y) {
+            const deltaX = Math.abs(point.x - this.puntosInternos[i].x);
+            const deltaY = Math.abs(point.y - this.puntosInternos[i].y);
+            if (deltaX <= 0.5 && deltaY <= 0.5) {
                 return true;
             }
         }

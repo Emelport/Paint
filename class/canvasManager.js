@@ -223,9 +223,10 @@ class CanvasManager {
         //Recorrer el arreglo de figuras desde el ultimo agregado hacia atras para ver si pertenece a esa figura utilizando el isinside
         let figuraSeleccionada = this.history.seleccionarFigura(ctx,start);
         if (figuraSeleccionada){
+            console.log("Figura seleccionada", figuraSeleccionada);
             figuraSeleccionada.rellenar(ctx,targetColor,this.color)
-            this.history.addActionToHistory()
         }
+        this.history.renderizar(ctx,1);
     }  
     floodFill(ctx,startX, startY, targetColor, fillColor) {
         if (targetColor.toString() === fillColor.toString()) {
@@ -330,34 +331,30 @@ class CanvasManager {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         // Dibujar la figura correspondiente
         if (this.modo === "linea") {
-            const line = this.drawLine(start, end);
-            this.preview(line);
+            this.drawLine(start, end);
+
         } else if (this.modo === "cuadrado") {
-            const square = this.drawSquare(start, end);
-            this.preview(square);
+            this.drawSquare(start, end);
+
         } else if (this.modo === "circulo") {
-            const circle = this.drawCircle(start, end);
-            this.preview(circle);
+            this.drawCircle(start, end);
+
         } else if (this.modo    === "poligono") {
-            const poligonos = this.drawPolygon(start, end);
-            this.preview(poligonos)
+            this.drawPolygon(start, end);
+
         } else if (this.modo === "elipse") {
-            const elipse = this.drawElips(start, end);
-            this.preview(elipse);
+            this.drawElips(start, end);
+
         }
         else if (this.modo === "lapiz") {
             const F = new Figura(ctx, this.color, this.grosor);
             F.drawPixel(end);
-            this.history.renderizar(this.getCurrentCanvasContext(),1);
         }
+
+        // this.history.renderizar(this.getCurrentCanvasContext(),1);
 
     }   
 
-    preview(figura){
-        figura.drawPixel(figura.puntos)
-        figura.drawPixel(figura.puntosInternos)
-
-    }
     draw(start, end) {
 
         if (this.modo === "linea") {
@@ -386,7 +383,7 @@ class CanvasManager {
         }
         else if (this.modo === "lapiz") {
             const F = new Figura(ctx, this.color, this.grosor);
-            F.drawPixel(end);
+            F.drawPixel(start.x, start.y);
         }
         else if (this.modo === "borrar") {
             const ctx = this.getCurrentCanvasContext();
@@ -395,6 +392,9 @@ class CanvasManager {
             this.history.undoStack = [];
             this.history.redoStack = [];
         }
+
+        this.history.renderizar(this.getCurrentCanvasContext(),1);
+
     
     }
 

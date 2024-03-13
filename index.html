@@ -4,113 +4,81 @@
     <meta charset="UTF-8">
     <title>Paint++</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Importar main.js -->
-    <script type="module" src="main.js"></script>
-    <!-- div de Encavezado -->
-    <div class="header">
-        PAINT++
-        <!-- Hacer y deshacer -->
-        <div class="coords">
-            <p id="coordenadas"></p>
-        </div>
-
-        <div class="undoRedo">
-            <button id="undo">Deshacer</button>
-            <button id="redo">Rehacer</button>
-            <button id="lineTest">Test Lineas</button>
-        </div>
-    </div>  
- 
-
 </head>
 <body>
     <div class="container">
-        <div class="title">
-            <!-- MODO SELECCIONADO -->
-            <p id="modoActual">
-                <p id="colorActual"></p>
-            </p>
-            
-        </div>
-        <!-- Barra de herramientas -->
+        <div class="header">
+            <div class="undoRedo">
+                <button id="undo">Deshacer</button>
+                <button id="redo">Rehacer</button>
+                <button id="lineTest">Test Lineas</button>
+                <p class="coordenadas" id="coordenadas">Coordenadas: 0, 0</p>
+            </div>
+        </div>  
+
         <div class="toolbox">
-
-            <!-- Cursor -->
             <div class="tool">
-                <img  id="cursor" src="img/click.png" >
-            </div>
-            <!-- Lapicito -->
-            <div class="tool">
-                <img  id="grid" src="img/grid.png" >
+                <img id="cursor" src="img/click.png" alt="Cursor">
             </div>
             <div class="tool">
-                <img  id="pencil" src="img/pencil.png" >
+                <img id="grid" src="img/grid.png" alt="Grid">
             </div>
-            <!-- Goma -->
-            <div class="tool" >
-                <img id="eraser" src="img/eraser.png" >
+            <div class="tool">
+                <img id="pencil" src="img/pencil.png" alt="Lapicito">
             </div>
-            <!-- Goma -->
-            <div class="tool" >
-                <img id="bucket" src="img/bucket.png" >
+            <div class="tool">
+                <img id="eraser" src="img/eraser.png" alt="Goma">
             </div>
-            <!-- Cuadrado -->
-            <div class="tool" >
-                <img id="square" src="img/square.png" >
+            <div class="tool">
+                <img id="bucket" src="img/bucket.png" alt="Cubo de Pintura">
             </div>
-             <!-- Circulo -->
-             <div class="tool" >
-                <img id="circle" src="img/circle.png" >
+            <div class="tool">
+                <img id="square" src="img/square.png" alt="Cuadrado">
             </div>
-            <!-- Line -->
-            <div class="tool" >
-                <img id="line" src="img/line.png" >
+            <div class="tool">
+                <img id="circle" src="img/circle.png" alt="Círculo">
             </div>
-            <!-- Poligonos  -->
-            <div class="tool" >
-                <img id="polygon" src="img/polygon.png" >
+            <div class="tool">
+                <img id="line" src="img/line.png" alt="Línea">
             </div>
-            <!-- Colores -->
-            <div class="tool" >
-                <img id="elipse" src="img/elipse.png" >
+            <div class="tool">
+                <img id="polygon" src="img/polygon.png" alt="Polígonos">
             </div>
-            <!-- Colores -->
+            <div class="tool">
+                <img id="elipse" src="img/elipse.png" alt="Elipse">
+            </div>
             <div class="colorTool">
-                <input type="color" id="colorPicker" >
+                <input type="color" id="colorPicker">
             </div>
-
             <div class="grosorTool">
-                <input id="grosor" class="range" type="range" id="grosor" min="1" max="10" value="1">
+                <p>Grosor
+                    <input id="grosor" class="range" type="range" min="1" max="10" value="1">
+                </p>    
             </div>
-              <!-- Selector de canvas -->
             <div class="canvasSelector">
                 <div class="canvasSelectorItem">
-                    <p>Capa 1</p>
                     <input type="radio" name="canvasSelector" id="layer1" checked>
+                    <label for="layer1">Capa 1</label>
                 </div>
                 <!-- <div class="canvasSelectorItem">
-                    <p>Capa 2</p>
                     <input type="radio" name="canvasSelector" id="layer2">
+                    <label for="layer2">Capa 2</label>
                 </div>
                 <div class="canvasSelectorItem">
-                    <p>Capa 3</p>
                     <input type="radio" name="canvasSelector" id="layer3">
+                    <label for="layer3">Capa 3</label>
                 </div> -->
             </div>
         </div>
-    
 
-        <!-- Contenedor de capas -->
         <div class="canvas-container">
-            <!-- Capa para el grid -->
             <canvas id="gridCanvas" class="canvas"></canvas>
-            <!-- Actualiza la función de dibujo para todas las capas -->
-            <canvas id="layer1Canvas" class="canvas" ></canvas>
+            <canvas id="layer1Canvas" class="canvas"></canvas>
             <canvas id="layer2Canvas" class="canvas"></canvas>
-            <canvas id="layer3Canvas" class="canvas" ></canvas>
+            <canvas id="layer3Canvas" class="canvas"></canvas>
         </div>
-         
     </div>
 
+    <script type="module" src="main.js"></script>
 </body>
 </html>

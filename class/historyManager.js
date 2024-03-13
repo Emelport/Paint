@@ -42,41 +42,30 @@ class HistoryManager {
         elemento.tipo = tipo;
         this.redoStack.push(elemento);
     }
-    renderizar(ctx,option) {
-        console.log("renderizar")
-        //Limpiar el canvas
-
-        let actionsRender = []
+    renderizar(ctx, option) {
+        // Seleccionar la pila apropiada según la opción
+        const actionsRender = (option === 1) ? this.redoStack : this.undoStack;
         
-        if(option == 1)
-        {
-            console.log()
-            actionsRender = this.redoStack
-        }
-        else
-        {
+        // Limpiar el lienzo si se está renderizando desde la pila de deshacer
+        if (option !== 1) {
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            actionsRender = this.undoStack
         }
-        
-        actionsRender.forEach(action => {
+    
+        // Dibujar todas las figuras en la pila de acciones
+        for (const action of actionsRender) {
             if (action.tipo === "figure") {
-                action.dato.draw(); 
-            } else if (action.tipo === "fill") {
-                // Crear un nuevo canvas temporal
-                const tempCanvas = document.createElement('canvas');
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCanvas.width = ctx.canvas.width;
-                tempCanvas.height = ctx.canvas.height;
-
-                // Aplicar el relleno en el nuevo canvas temporal
-                tempCtx.putImageData(action.dato, 0, 0);
-
-                // Dibujar el canvas temporal en el contexto principal
-                ctx.drawImage(tempCanvas, 0, 0);
+                const figura = action.dato;
+                figura.draw();
+    
+                // Si la figura está rellena, rellenarla después de dibujarla
+                if (figura.estaRellena) {
+                    figura.rellenar(ctx, null, figura.color);
+                }
             }
-        });
-    }   
+        }
+    }
+    
+
     hexToRgb(hex) {
         //Recibe un color en formato hexadecimal y lo convierte a RGB
         //Ejemplo: #FFFFFF -> [255, 255, 255, 255]
@@ -103,6 +92,7 @@ class HistoryManager {
    
         actionsRender.forEach(action => {
             if (action.tipo === "figure") {
+                console.log(action.dato.isInside(start))
                 if (action.dato.isInside(start)){
                     console.log(action.dato)
                     figuraSeleccionada = action.dato

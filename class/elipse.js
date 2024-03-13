@@ -8,7 +8,6 @@ class Elipse extends Figura {
   }
 
   draw() {
-    //Dibuja la elipse
     if (!this.ctx) {
       console.error("El contexto del canvas no es válido.");
       return;
@@ -24,45 +23,52 @@ class Elipse extends Figura {
       return;
     }
 
-    // Limpiar el canvas antes de dibujar
-    // this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-
     // Dibujar la elipse
     this.drawElipse(this.start, this.end);
+
+    // Calcular los puntos internos
+    this.calcularPuntosInternos();
   }
 
   drawElipse(center, radius) {
-    // Calcular el radio en X y Y
     const radiusX = Math.abs(radius.x - center.x);
     const radiusY = Math.abs(radius.y - center.y);
 
-    // Calcular los puntos de la elipse
     const paso = 0.01;
     for (let t = 0; t < 2 * Math.PI; t += paso) {
       const x = center.x + radiusX * Math.cos(t);
       const y = center.y + radiusY * Math.sin(t);
-      this.drawPixel(x, y); // L
+      this.drawPixel(x, y); // Dibujar el punto
       this.puntos.push({ x, y });
     }
     this.ctx.closePath();
   }
 
   calcularPuntosInternos() {
-    // Calcular los puntos internos de la elipse a partir de los puntos de la elipse
-    const perimetro = this.puntos;
-    // Calcular los puntos internos
-    for (var i = 0; i < perimetro.length; i++) {
-      var punto = perimetro[i];
-      if (this.isInside(punto)) {
-        this.puntosInternos.push(punto);
+    // Limpiar los puntos internos previos
+    this.puntosInternos = [];
+
+    // Obtener el centro y los radios de la elipse
+    const centerX = this.start.x;
+    const centerY = this.start.y;
+    const radiusX = Math.abs(this.end.x - this.start.x);
+    const radiusY = Math.abs(this.end.y - this.start.y);
+
+    // Calcular los puntos internos utilizando la ecuación de la elipse
+    for (let x = centerX - radiusX; x <= centerX + radiusX; x++) {
+      for (let y = centerY - radiusY; y <= centerY + radiusY; y++) {
+        if (this.isInsideEllipse({ x, y }, centerX, centerY, radiusX, radiusY)) {
+          this.puntosInternos.push({ x, y });
+        }
       }
     }
-
-    
   }
 
-  
-
+  isInsideEllipse(point, centerX, centerY, radiusX, radiusY) {
+    const dx = (point.x - centerX) / radiusX;
+    const dy = (point.y - centerY) / radiusY;
+    return dx * dx + dy * dy <= 1;
+  }
 }
 
 export { Elipse };
