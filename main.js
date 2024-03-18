@@ -7,7 +7,6 @@ var ctx;
 document.addEventListener("DOMContentLoaded", function () {
     const canvasManager = new CanvasManager();
     // Agrega un log para verificar que la instancia se haya creado correctamente
-    console.log(canvasManager);
     console.log(canvasManager.getCurrentCanvas());
     canvasManager.setDrawing(false);
     //Modificar el style de los canvas que no son el actual y ocultarlos
@@ -27,6 +26,9 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     document.getElementById("circle").onclick = function () {
         canvasManager.cambiarModo('circulo');
+    };
+    document.getElementById("trapecio").onclick = function () {
+        canvasManager.cambiarModo('trapecio');
     };
     document.getElementById("eraser").onclick = function () {
         canvasManager.cambiarModo('borrar');
@@ -56,18 +58,18 @@ document.addEventListener("DOMContentLoaded", function () {
         canvasManager.cambiarGrosor(this.value);
     };
     //GRID
-    document.getElementById("gridCanvas").onclick = function () {
-        if (canvasManager.getGridEnabled()) {
-            canvasManager.setGridEnabled(false);
-        }
-        else {
-            canvasManager.setGridEnabled(true);
-        }
-    };
+    // document.getElementById("gridCanvas").onclick = function () {
+    //     if (canvasManager.getGridEnabled()) {
+    //         canvasManager.setGridEnabled(false);
+    //     }
+    //     else {
+    //         canvasManager.setGridEnabled(true);
+    //     }
+    // };
     //Selector de canvas
-    document.getElementById("layer1").onclick = function () {
-        canvasManager.setCurrentCanvas("layer1Canvas");
-    };
+    // document.getElementById("layer1").onclick = function () {
+    //     canvasManager.setCurrentCanvas("layer1Canvas");
+    // };
     // document.getElementById("layer2").onclick = function () {
     //     canvasManager.setCurrentCanvas("layer2Canvas");
     // };
@@ -104,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const modo = canvasManager.getCurrentModo();
 
             //Si entra a cualquier modo de dibujo
-            if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse') {
+            if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio') {
                 canvasManager.drawPreview(startPoint, endPoint);
             }
         }
@@ -115,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const modo = canvasManager.getCurrentModo();
 
         //Si entra a cualquier modo de dibujo
-        if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse') {
+        if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio') {
             canvasManager.draw(startPoint, endPoint);
         }else if (modo === 'cursor') {
             canvasManager.selectElement(startPoint);

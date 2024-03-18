@@ -56,11 +56,7 @@ body {
     flex-shrink: 0;
 }
 
-.canvas-container {
-    /* oculto */
-    display: none;
-    position: relative;
-}
+
 
 .toolbox {
     /* Centrado horizontaly vertical */
@@ -86,10 +82,17 @@ body {
     align-items: center;
 }
 
+/* Mantener los canvas encimados exactamente en la misma posicion */
 .canvas {
     border: 1px solid #ccc;
-    margin-top: 10px;
+    /* Tenga siempre la opacidad máxima todo lo que se dibuje ahí */
+    background-color: rgba(255, 255, 255, 0); /* Color blanco con opacidad alfa 0 */
+    position: absolute;
+    top: 13%; /* Ajusta según tus necesidades */
+    z-index: 1; /* Asegura que ambos estén en el mismo plano */
 }
+
+
 
 .undoRedo {
     position: absolute;

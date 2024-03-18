@@ -5,14 +5,13 @@ import {Circulo} from "../class/circulo.js";
 import {Poligonos} from "../class/poligonos.js";   
 import {Elipse} from "../class/elipse.js";
 import {HistoryManager} from "../class/historyManager.js"
+import { Trapecio } from "./trapecio.js";
 
 class CanvasManager {
     constructor() {
         // Obtener contextos de las capas
-        this.gridCtx = document.getElementById("gridCanvas").getContext("2d", { willReadFrequently: true });
         this.layer1Ctx = document.getElementById("layer1Canvas").getContext("2d", { willReadFrequently: true });
         this.layer2Ctx = document.getElementById("layer2Canvas").getContext("2d", { willReadFrequently: true });
-        this.layer3Ctx = document.getElementById("layer3Canvas").getContext("2d", { willReadFrequently: true });
 
         // Otras propiedades y configuraciones necesarias
         this.modo = "";
@@ -35,20 +34,13 @@ class CanvasManager {
     setupCanvas() {
 
         //Tamano de los canvas
-
-        this.gridCtx.canvas.width = 1024;
-        this.gridCtx.canvas.height = 768;
         this.layer1Ctx.canvas.width = 1024;
         this.layer1Ctx.canvas.height = 768;
         this.layer2Ctx.canvas.width = 1024;
         this.layer2Ctx.canvas.height = 768;
-        this.layer3Ctx.canvas.width = 1024;
-        this.layer3Ctx.canvas.height = 768;
-        
         // El canvas actual es el layer1 por defecto
-        this.setCurrentCanvas("layer1Canvas");
-        //Ocultar el grid por defecto
-        document.getElementById("gridCanvas").style.display = "none";
+        this.setCurrentCanvas("layer2Canvas");
+
     }
     setupListeners() {
        //MouseDown
@@ -59,22 +51,7 @@ class CanvasManager {
         // Establece el canvas actual en función del ID proporcionado
         this.currentCanvas = document.getElementById(canvasId);
 
-        //ocultar los otros canvas
-        if (canvasId === "layer1Canvas") {
-            document.getElementById("layer2Canvas").style.display = "none";
-            document.getElementById("layer3Canvas").style.display = "none";
-        } else if (canvasId === "layer2Canvas") {
-            document.getElementById("layer1Canvas").style.display = "none";
-            document.getElementById("layer3Canvas").style.display = "none";
-        }
-        else if (canvasId === "layer3Canvas") {
-            document.getElementById("layer1Canvas").style.display = "none";
-            document.getElementById("layer2Canvas").style.display = "none";
-        }
-        //mostrar el canvas seleccionado
-        this.currentCanvas.style.display = "block";
-
-        console.log(this.currentCanvas);
+        // console.log(this.currentCanvas);
     }
     setDrawing(newDrawing) {
         // Establece el estado del dibujo
@@ -109,19 +86,15 @@ class CanvasManager {
     }
     getRelativeCoordinates(event) {
         // Obtiene las coordenadas relativas del evento en el canvas actual
-        if (this.currentCanvas) {
-            const rect = this.currentCanvas.getBoundingClientRect();
-            return {
-                x: event.clientX - rect.left,
-                y: event.clientY - rect.top
-            };
-           
-        } else {
-            console.error("No hay un canvas seleccionado.");
-            return null;
-        }
+    
+        const rect = this.getCurrentCanvasContext().canvas.getBoundingClientRect();
+        return {
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top
+        };
 
-       
+        // console.log(rect);
+
     }
     getCurrentCanvasContext() {
         //Obtener el context del canvas actual
@@ -207,6 +180,12 @@ class CanvasManager {
         // Llamar al método drawPixel del objeto Figura
         figura.drawPixel(point.x, point.y);
     }
+    drawTrapecio(start,end){
+        const ctx = this.getCurrentCanvasContext();
+        const trapecio = new Trapecio(ctx, this.color, this.grosor, start, end);
+        trapecio.draw();
+        return trapecio;
+    }
     cleanLine(start, end) {
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
@@ -225,6 +204,11 @@ class CanvasManager {
         if (figuraSeleccionada){
             console.log("Figura seleccionada", figuraSeleccionada);
             figuraSeleccionada.rellenar(ctx,targetColor,this.color)
+        }
+        else {
+            console.log("No hay figura seleccionada")
+            console.log(start.x, start.y)
+
         }
         this.history.renderizar(ctx,1);
     }  
@@ -326,25 +310,24 @@ class CanvasManager {
     }
     drawPreview(start, end) {
         // Obtener el contexto del canvas actual
+        this.setCurrentCanvas("layer2Canvas");  
         const ctx = this.getCurrentCanvasContext();
         // // Limpiar el canvas
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         // Dibujar la figura correspondiente
         if (this.modo === "linea") {
             this.drawLine(start, end);
-
         } else if (this.modo === "cuadrado") {
             this.drawSquare(start, end);
-
         } else if (this.modo === "circulo") {
             this.drawCircle(start, end);
-
         } else if (this.modo    === "poligono") {
             this.drawPolygon(start, end);
-
         } else if (this.modo === "elipse") {
             this.drawElips(start, end);
-
+        }
+        else if (this.modo === "trapecio") {
+            this.drawTrapecio(start, end);
         }
         else if (this.modo === "lapiz") {
             const F = new Figura(ctx, this.color, this.grosor);
@@ -356,6 +339,8 @@ class CanvasManager {
     }   
 
     draw(start, end) {
+        this.setCurrentCanvas("layer1Canvas");
+        const ctx = this.getCurrentCanvasContext();
 
         if (this.modo === "linea") {
             const line = this.drawLine(start, end);
@@ -381,6 +366,11 @@ class CanvasManager {
             this.figuras.push(elipse);
             this.history.addActionToHistory(elipse, "figure");
         }
+        else if (this.modo === "trapecio") {
+            const trapecio = this.drawTrapecio(start, end);
+            this.figuras.push(trapecio);
+            this.history.addActionToHistory(trapecio, "figure");
+        }
         else if (this.modo === "lapiz") {
             const F = new Figura(ctx, this.color, this.grosor);
             F.drawPixel(start.x, start.y);
@@ -388,6 +378,7 @@ class CanvasManager {
         else if (this.modo === "borrar") {
             const ctx = this.getCurrentCanvasContext();
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); 
+            this.layer2Ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             this.figuras = [];
             this.history.undoStack = [];
             this.history.redoStack = [];
