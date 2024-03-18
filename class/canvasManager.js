@@ -6,6 +6,8 @@ import {Poligonos} from "../class/poligonos.js";
 import {Elipse} from "../class/elipse.js";
 import {HistoryManager} from "../class/historyManager.js"
 import { Trapecio } from "./trapecio.js";
+import { Rectangulo } from "./rectangulo.js";
+import { Texto } from "./texto.js";
 
 class CanvasManager {
     constructor() {
@@ -148,6 +150,26 @@ class CanvasManager {
         // Llamar al método draw de la instancia Linea
         cuadrado.draw();
         return cuadrado;
+    }
+    drawText(start, end) {
+        // Obtener el contexto del canvas actual
+        const ctx = this.getCurrentCanvasContext();
+        // Crear una instancia de la clase Linea (o tu clase correspondiente)
+        const texto = new Texto(ctx, this.color, this.grosor, start, end);
+        // Llamar al método draw de la instancia Linea
+        texto.draw();
+        return texto;
+    }
+
+    drawRectangle(start, end) {
+
+        // Obtener el contexto del canvas actual
+        const ctx = this.getCurrentCanvasContext();
+        // Crear una instancia de la clase Linea (o tu clase correspondiente)
+        const rectangulo = new Rectangulo(ctx, this.color, this.grosor, start, end);
+        // Llamar al método draw de la instancia Linea
+        rectangulo.draw();
+        return rectangulo;
     }
     drawCircle(start,end){
         // Obtener el contexto del canvas actual
@@ -319,6 +341,8 @@ class CanvasManager {
             this.drawLine(start, end);
         } else if (this.modo === "cuadrado") {
             this.drawSquare(start, end);
+        } else if (this.modo === "rectangulo") {
+            this.drawRectangle(start, end);
         } else if (this.modo === "circulo") {
             this.drawCircle(start, end);
         } else if (this.modo    === "poligono") {
@@ -351,7 +375,15 @@ class CanvasManager {
             const square = this.drawSquare(start, end);
             this.figuras.push(square);
             this.history.addActionToHistory(square, "figure");
-
+        } else if (this.modo === "texto") {
+            const text = this.drawText(start, end);
+            this.figuras.push(text);
+            this.history.addActionToHistory(text, "figure");
+            
+        } else if (this.modo === "rectangulo") {
+            const rectangle = this.drawRectangle(start, end);
+            this.figuras.push(rectangle);
+            this.history.addActionToHistory(rectangle, "figure");
         } else if (this.modo === "circulo") {
             const circle = this.drawCircle(start, end);
             this.figuras.push(circle);
@@ -403,35 +435,12 @@ class CanvasManager {
         return [data[0], data[1], data[2], data[3]]; // RGBA
     }
     selectElement(start){
+        // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
-        
-        //Buscar la figura mas cercana al punto de inicio
-        let figuraSeleccionada = null;
-        let distanciaMinima = Infinity;
-        this.figuras.forEach(figura => {
-            //Usar isInside para verificar si el punto está dentro de la figura
-            if(figura.isInside(start)){
-                this.figuraSeleccionada = figura;
-                console.log("Figura seleccionada");
-                console.log(figura);
-                return;
-            }
-            else
-            {
-                this.figuraSeleccionada = null;
-                console.log("No hay figura seleccionada");
-            }
-        });
-
-        //Poner un border alrededor de la figura seleccionada con animación
-        if(this.figuraSeleccionada){
-            // this.renderizarFiguras();
-            // this.figuraSeleccionada.color = "#FF0000";
-            // this.figuraSeleccionada.draw();
-            console.log(this.figuraSeleccionada)
-
-        }
-
+        //Recorrer el arreglo de figuras desde el ultimo agregado hacia atras para ver si pertenece a esa figura utilizando el isinside
+        let figuraSeleccionada = this.history.seleccionarFigura(ctx,start);
+        // console.log(figuraSeleccionada);
+        this.figuraSeleccionada = figuraSeleccionada;
 
     }
 }

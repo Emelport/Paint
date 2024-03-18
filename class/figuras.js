@@ -98,6 +98,16 @@ class Figura {
             }
         }
     }
+
+    trasladarFigura(dx, dy) {
+        // Trasladar la figura
+        this.puntos = this.puntos.map(punto => {
+            return { x: punto.x + dx, y: punto.y + dy };
+        });
+        this.puntosInternos = this.puntosInternos.map(punto => {
+            return { x: punto.x + dx, y: punto.y + dy };
+        });
+    }
 }
 
 export { Figura };

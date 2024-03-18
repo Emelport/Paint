@@ -24,6 +24,12 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("square").onclick = function () {
         canvasManager.cambiarModo('cuadrado');
     };
+    document.getElementById("text").onclick = function () {
+        canvasManager.cambiarModo('texto');
+    };
+    document.getElementById("rectangle").onclick = function () {
+        canvasManager.cambiarModo('rectangulo');
+    };
     document.getElementById("circle").onclick = function () {
         canvasManager.cambiarModo('circulo');
     };
@@ -53,10 +59,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     document.getElementById("colorPicker").onchange = function () {
         canvasManager.cambiarColor(this.value);
-    };      
+    };     
+   
     document.getElementById("grosor").onchange = function () {
         canvasManager.cambiarGrosor(this.value);
     };
+    
     //GRID
     // document.getElementById("gridCanvas").onclick = function () {
     //     if (canvasManager.getGridEnabled()) {
@@ -106,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const modo = canvasManager.getCurrentModo();
 
             //Si entra a cualquier modo de dibujo
-            if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio') {
+            if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio' || modo === 'rectangulo' || modo === 'cubeta') {
                 canvasManager.drawPreview(startPoint, endPoint);
             }
         }
@@ -117,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const modo = canvasManager.getCurrentModo();
 
         //Si entra a cualquier modo de dibujo
-        if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio') {
+        if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio' || modo === 'rectangulo' || modo === 'cubeta' || modo === 'texto') {
             canvasManager.draw(startPoint, endPoint);
         }else if (modo === 'cursor') {
             canvasManager.selectElement(startPoint);
@@ -126,8 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     // Agrega event listener para el evento de mouseout
     canvasManager.getCurrentCanvas().addEventListener("mouseout", function () {
-        console.log("mouseout");
-        console.log(canvasManager.getDrawing());
+        // console.log("mouseout");
+        // console.log(canvasManager.getDrawing());
         canvasManager.setDrawing(false);
     });
     //***************************BOTONES ****************/
@@ -146,6 +154,26 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("redo").onclick = function () {
         canvasManager.history.redo();
     };
+    //Cuando se de click en las flechas del teclado trasladar la figura, recibe dx y dy canvasManager.figuraSeleccionada.trasladarFigura
+    document.addEventListener('keydown', function (event) {
+        if (canvasManager.figuraSeleccionada != null) {
+            if (event.key === "ArrowUp") {
+                canvasManager.figuraSeleccionada.trasladarFigura(0, -1);
+            }
+            if (event.key === "ArrowDown") {
+                canvasManager.figuraSeleccionada.trasladarFigura(0, 1);
+            }
+            if (event.key === "ArrowLeft") {
+                canvasManager.figuraSeleccionada.trasladarFigura(-1, 0);
+            }
+            if (event.key === "ArrowRight") {
+                canvasManager.figuraSeleccionada.trasladarFigura(1, 0);
+            }
+        }
+
+        canvasManager.history.renderizar(canvasManager.getCurrentCanvasContext(), 2);
+
+    });
 
 
     //*************************** Estados **************

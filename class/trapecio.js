@@ -34,51 +34,8 @@ class Trapecio extends Figura {
         //Almacenar todos los puntos en this.puntos
         this.puntos = puntosSuperior.concat(puntosInferior, puntosIzquierda, puntosDerecha);
     
-        this.puntosInternos = this.calcularPuntosInternos(puntosSuperior, puntosInferior, puntosIzquierda, puntosDerecha);
-        console.log(this.puntosInternos);
-    }
-
-    calcularPuntosInternos(puntosSuperior, puntosInferior, puntosIzquierda, puntosDerecha) {
-        const puntos = [];
-    
-        // Calcular intersecciones entre los lados del trapecio
-        const intersecciones = [];
-        for (let i = 0; i < puntosSuperior.length; i++) {
-            const puntoSuperior = puntosSuperior[i];
-            const puntoInferior = puntosInferior[i];
-            const interseccion = this.calcularInterseccion(puntoSuperior, puntoInferior, puntosIzquierda[i], puntosDerecha[i]);
-            intersecciones.push(interseccion);
-        }
-    
-        // Añadir puntos internos
-        for (let i = 0; i < intersecciones.length; i++) {
-            puntos.push(intersecciones[i]);
-            if (i % 2 === 1) {
-                // Añadir punto medio entre dos intersecciones consecutivas
-                const puntoMedio = {
-                    x: (intersecciones[i - 1].x + intersecciones[i].x) / 2,
-                    y: (intersecciones[i - 1].y + intersecciones[i].y) / 2
-                };
-                puntos.push(puntoMedio);
-            }
-        }
-    
-        return puntos;
-    }
-    
-    calcularInterseccion(punto1, punto2, punto3, punto4) {
-        // Calcular la intersección de dos líneas
-        const x =
-            ((punto1.x * punto2.y - punto1.y * punto2.x) * (punto3.x - punto4.x) - (punto1.x - punto2.x) * (punto3.x * punto4.y - punto3.y * punto4.x)) /
-            ((punto1.x - punto2.x) * (punto3.y - punto4.y) - (punto1.y - punto2.y) * (punto3.x - punto4.x));
-        const y =
-            ((punto1.x * punto2.y - punto1.y * punto2.x) * (punto3.y - punto4.y) - (punto1.y - punto2.y) * (punto3.x * punto4.y - punto3.y * punto4.x)) /
-            ((punto1.x - punto2.x) * (punto3.y - punto4.y) - (punto1.y - punto2.y) * (punto3.x - punto4.x));
-        return { x: x, y: y };
-    }
-    
-    clean() {
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        // this.puntosInternos = this.calcularPuntosInternos(puntosSuperior, puntosInferior, puntosIzquierda, puntosDerecha);
+        // console.log(this.puntosInternos);
     }
 }
 

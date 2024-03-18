@@ -6,47 +6,39 @@ class Cuadrado extends Figura {
         // Recibe la diagonal del cuadrado
         this.start = start;
         this.end = end;
-
     }
+
     // Dibujar el cuadrado
     draw() {
-        this.drawOutline(this.start, this.end);
+        // Calcular las coordenadas del cuadrado
+        const minX = Math.min(this.start.x, this.end.x);
+        const minY = Math.min(this.start.y, this.end.y);
+        const lado = Math.max(Math.abs(this.start.x - this.end.x), Math.abs(this.start.y - this.end.y));
+        
+        // Dibujar el cuadrado
+        this.drawSquare(minX, minY, lado);
     }
-    // Dibujar el contorno del cuadrado
-   // Método para dibujar el contorno del rectángulo
-    drawOutline(start, end) {
-        // Obtener las coordenadas del rectángulo
-        const rectStartX = Math.min(start.x, end.x);
-        const rectStartY = Math.min(start.y, end.y);
-        const rectEndX = Math.max(start.x, end.x);
-        const rectEndY = Math.max(start.y, end.y);
 
-        // Dibujar el contorno del rectángulo y calcular puntos
-        for (let x = rectStartX; x <= rectEndX; x++) {
-            for (let y = rectStartY; y <= rectEndY; y++) {
-                // Dibujar el contorno y calcular puntos
-                if (x === rectStartX || x === rectEndX || y === rectStartY || y === rectEndY) {
-                    this.drawPixel(x, y);
-                    this.puntos.push({ x: x, y: y });
-                }
-                // Calcular puntos internos
-                else {
-                    this.puntosInternos.push({ x: x, y: y });
+    // Método para dibujar el cuadrado
+    drawSquare(x, y, lado) {
+        for (let i = x; i <= x + lado; i++) {
+            for (let j = y; j <= y + lado; j++) {
+                if (i === x || i === x + lado || j === y || j === y + lado) {
+                    this.drawPixel(i, j);
+                    this.puntos.push({ x: i, y: j });
+                } else {
+                    this.puntosInternos.push({ x: i, y: j });
                 }
             }
         }
     }
 
-    // 
+    // Método para limpiar el cuadrado
     clean() {
-       //Por cada punto de la linea
-         this.puntos.forEach(punto => {
-              //Limpiar el punto
-              this.borrarPixel(punto.x, punto.y);
-         });
+        this.puntos.forEach(punto => {
+            this.borrarPixel(punto.x, punto.y);
+        });
     }
-
-
 }
 
 export { Cuadrado };
