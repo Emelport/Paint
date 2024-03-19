@@ -33,8 +33,26 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("circle").onclick = function () {
         canvasManager.cambiarModo('circulo');
     };
-    document.getElementById("trapecio").onclick = function () {
-        canvasManager.cambiarModo('trapecio');
+    document.getElementById("move").onclick = function () {
+        canvasManager.cambiarModo('mover');
+    };
+    document.getElementById("rotation").onclick = function () {
+        canvasManager.cambiarModo('rotar');
+    };
+    document.getElementById("resize").onclick = function () {
+        canvasManager.cambiarModo('escalar');
+    };
+    document.getElementById("forward").onclick = function () {
+        canvasManager.cambiarModo('HaciaAdelante');
+    };
+    document.getElementById("backward").onclick = function () {
+        canvasManager.cambiarModo('HaciaAtras');
+    };
+    document.getElementById("uplayer").onclick = function () {
+        canvasManager.cambiarModo('SubirCapa');
+    };
+    document.getElementById("downlayer").onclick = function () {
+        canvasManager.cambiarModo('BajarCapa');
     };
     document.getElementById("eraser").onclick = function () {
         canvasManager.cambiarModo('borrar');
@@ -45,9 +63,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("bucket").onclick = function () {
         canvasManager.cambiarModo('cubeta');
     };
-    document.getElementById("lineTest").onclick = function () {
-        canvasManager.lineTest();
-    }
+    // document.getElementById("lineTest").onclick = function () {
+    //     canvasManager.lineTest();
+    // }
     document.getElementById("polygon").onclick = function () {
         canvasManager.cambiarModo('poligono');
         //Salga un selector de numeros y dependiendo del numero seleciconado ejecutar setLadosPoligono
@@ -114,8 +132,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const modo = canvasManager.getCurrentModo();
 
             //Si entra a cualquier modo de dibujo
-            if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio' || modo === 'rectangulo' || modo === 'cubeta' || modo === 'texto') {
+            if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio' || modo === 'rectangulo' || modo === 'cubeta' || modo === 'texto') {
                 canvasManager.drawPreview(startPoint, endPoint);
+            } else if (modo === 'lapiz') {
+                canvasManager.drawPreview(startPoint, endPoint);
+                startPoint = endPoint;
             }
         }
     });
@@ -129,6 +150,8 @@ document.addEventListener("DOMContentLoaded", function () {
             canvasManager.draw(startPoint, endPoint);
         }else if (modo === 'cursor') {
             canvasManager.selectElement(startPoint);
+        }else if (modo === 'mover' || modo === 'rotar' || modo === 'HaciaAdelante' || modo === 'HaciaAtras' || modo === 'SubirCapa' || modo === 'BajarCapa' || modo === 'escalar') {
+            canvasManager.moverFigura(startPoint, endPoint);
         }
         canvasManager.setDrawing(false);
     });

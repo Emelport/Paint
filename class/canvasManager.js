@@ -160,7 +160,6 @@ class CanvasManager {
         texto.draw();
         return texto;
     }
-
     drawRectangle(start, end) {
 
         // Obtener el contexto del canvas actual
@@ -194,19 +193,14 @@ class CanvasManager {
         elipse.draw();
         return elipse;
     }
-    drawPixel(point) {
-        console.log("Dibujando pixel");
-        // Obtener el contexto del canvas actual
+    drawPixel(start,end,) {
+       //Dibujo libre, pintar pixel por pixel
         const ctx = this.getCurrentCanvasContext();
+        let line = new Linea(ctx, this.color, this.grosor, start, end);
+        let puntosLinea = line.draw(start, end);
+        //Sumarle al arreglo de puntos los puntos de la linea
+        this.freePixels = this.freePixels.concat(puntosLinea);
         
-        this.freePixels.push(point);
-        //Pintar el pixel
-        // Obtener el color y el grosor
-        const color = this.color;
-        const grosor = this.grosor;
-        const colorWithAlpha = color.replace(/[^,]+(?=\))/, '0');
-        ctx.fillStyle = colorWithAlpha;
-        ctx.fillRect(point.x, point.y, grosor, grosor);
 
     }
     drawTrapecio(start,end){
@@ -363,7 +357,7 @@ class CanvasManager {
             this.drawTrapecio(start, end);
         }
         else if (this.modo === "lapiz") {
-           this.drawPixel(start);
+           this.drawPixel(start,end);
         }
 
         // this.history.renderizar(this.getCurrentCanvasContext(),1);
@@ -432,6 +426,27 @@ class CanvasManager {
         this.history.renderizar(this.getCurrentCanvasContext());
 
     
+    }
+
+    moverFigura(start, end){
+        // Obtener el contexto del canvas actual
+        const ctx = this.getCurrentCanvasContext();
+        //Recorrer el arreglo de figuras desde el ultimo agregado hacia atras para ver si pertenece a esa figura utilizando el isinside
+        let figuraSeleccionada = this.figuraSeleccionada
+        // console.log(figuraSeleccionada);
+        if (figuraSeleccionada){
+            if (this.modo === "mover") {
+                figuraSeleccionada.trasladarFigura(end.x - start.x, end.y - start.y);
+            } else if (this.modo === "rotar") {
+                figuraSeleccionada.rotarFigura(start, end);
+            }else if (this.modo === "escalar") {
+                figuraSeleccionada.escalarFigura(start, end);
+            }
+            this.history.renderizar(ctx);
+                
+        } else {
+            console.log("No hay figura seleccionada")
+        }
     }
 
     lineTest(){

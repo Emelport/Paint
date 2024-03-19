@@ -57,6 +57,7 @@ class HistoryManager {
         for (const action of actionsRender) {
             if (action.tipo === "figure") {
                 const figura = action.dato;
+                // console.log(figura)
                 figura.draw();
     
                 // Si la figura está rellena, rellenarla después de dibujarla

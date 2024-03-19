@@ -11,7 +11,6 @@ class Figura {
 
     // Dibujar la figura (método abstracto)
     draw() {
-        console.log("Método abstracto");
         this.puntos.forEach(punto => {
             this.drawPixel(punto.x, punto.y);
         });
@@ -20,7 +19,6 @@ class Figura {
     drawPixel(x, y) {
         // Obtener el contexto del lienzo
         const ctx = this.ctx;
-        // Obtener el color y el grosor
         const color = this.color;
         const grosor = this.grosor;
         // Guardar el estado actual del contexto
@@ -95,13 +93,15 @@ class Figura {
     }
 
     trasladarFigura(dx, dy) {
-        // Trasladar la figura
+        console.log("Trasladar figura");
+        // Trasladar los puntos de la figura para que se dibuje en una nueva posición
         this.puntos = this.puntos.map(punto => {
             return { x: punto.x + dx, y: punto.y + dy };
         });
         this.puntosInternos = this.puntosInternos.map(punto => {
             return { x: punto.x + dx, y: punto.y + dy };
         });
+
     }
 
     rotarFigura(angulo) {

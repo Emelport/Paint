@@ -93,7 +93,7 @@ body {
 .undoRedo {
     position: absolute;
     bottom: 0;
-    left: 10%;
+    left: 8%;
     transform: translateX(-50%);
 }
 /* Estilos para el tamaño de las imágenes */
