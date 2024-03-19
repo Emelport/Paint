@@ -61,7 +61,8 @@ class Trapecio extends Figura {
         this.puntos.push(lineaDerecha.draw());
         // console.log(this.puntos);
 
-        this.calcularPuntosInternosDelTrapecio  (vertices);
+        let verticesTrapecio = [vertices[0], vertices[1], vertices[2], vertices[3]];
+        this.calcularPuntosInternosDelTrapecio(verticesTrapecio);
 
     }
 
