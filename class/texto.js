@@ -10,7 +10,9 @@ class Texto extends Figura {
         // Texto a dibujar
         this.texto = prompt('Por favor, ingrese el texto que desea dibujar:', '');
 
-        const rectangulo = new Rectangulo(ctx, this.color, this.grosor, x, y);
+        // Color Blanco
+        let colorR = '#fffffff';
+        const rectangulo = new Rectangulo(ctx, colorR, this.grosor, x, y);
         this.rectangulo = rectangulo;
     }
 

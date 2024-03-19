@@ -45,10 +45,6 @@ body {
     
 }
 
-.undoRedo {
-    text-align: center;
-    margin-top: 10px;
-}
 
 /* Estilos específicos para la disposición que solicitaste */
 .toolbox {
@@ -97,7 +93,7 @@ body {
 .undoRedo {
     position: absolute;
     bottom: 0;
-    left: 50%;
+    left: 10%;
     transform: translateX(-50%);
 }
 /* Estilos para el tamaño de las imágenes */

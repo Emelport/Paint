@@ -23,6 +23,7 @@ class CanvasManager {
         this.gridEnabled = false;
         this.startPoint = null;
         this.endPoint = null;
+        this.freePixels = [];
         this.currentCanvas = null;
         this.ladospoligono = 0;
         this.figuraSeleccionada = null;
@@ -30,7 +31,6 @@ class CanvasManager {
         this.setupListeners();
 
         this.history = new HistoryManager();
-        this.history.setContext(this.layer1Ctx);
         this.figuras = [];
     }
     setupCanvas() {
@@ -195,12 +195,19 @@ class CanvasManager {
         return elipse;
     }
     drawPixel(point) {
+        console.log("Dibujando pixel");
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
-        // Crear un objeto de tipo Figura (o tu clase correspondiente)
-        const figura = new Figura(ctx, this.color, this.grosor);
-        // Llamar al método drawPixel del objeto Figura
-        figura.drawPixel(point.x, point.y);
+        
+        this.freePixels.push(point);
+        //Pintar el pixel
+        // Obtener el color y el grosor
+        const color = this.color;
+        const grosor = this.grosor;
+        const colorWithAlpha = color.replace(/[^,]+(?=\))/, '0');
+        ctx.fillStyle = colorWithAlpha;
+        ctx.fillRect(point.x, point.y, grosor, grosor);
+
     }
     drawTrapecio(start,end){
         const ctx = this.getCurrentCanvasContext();
@@ -232,7 +239,7 @@ class CanvasManager {
             console.log(start.x, start.y)
 
         }
-        this.history.renderizar(ctx,1);
+        this.history.renderizar(ctx);
     }  
     floodFill(ctx,startX, startY, targetColor, fillColor) {
         if (targetColor.toString() === fillColor.toString()) {
@@ -341,6 +348,8 @@ class CanvasManager {
             this.drawLine(start, end);
         } else if (this.modo === "cuadrado") {
             this.drawSquare(start, end);
+        } else if (this.modo === "texto") {
+            this.drawRectangle(start, end);
         } else if (this.modo === "rectangulo") {
             this.drawRectangle(start, end);
         } else if (this.modo === "circulo") {
@@ -354,8 +363,7 @@ class CanvasManager {
             this.drawTrapecio(start, end);
         }
         else if (this.modo === "lapiz") {
-            const F = new Figura(ctx, this.color, this.grosor);
-            F.drawPixel(end);
+           this.drawPixel(start);
         }
 
         // this.history.renderizar(this.getCurrentCanvasContext(),1);
@@ -404,8 +412,13 @@ class CanvasManager {
             this.history.addActionToHistory(trapecio, "figure");
         }
         else if (this.modo === "lapiz") {
+            //guardar el dibujo libre en history action, creando una nueva figura
             const F = new Figura(ctx, this.color, this.grosor);
-            F.drawPixel(start.x, start.y);
+            F.puntos = this.freePixels;
+            console.log(F);
+            this.history.addActionToHistory(F, "figure");
+            this.freePixels = [];
+
         }
         else if (this.modo === "borrar") {
             const ctx = this.getCurrentCanvasContext();
@@ -416,7 +429,7 @@ class CanvasManager {
             this.history.redoStack = [];
         }
 
-        this.history.renderizar(this.getCurrentCanvasContext(),1);
+        this.history.renderizar(this.getCurrentCanvasContext());
 
     
     }

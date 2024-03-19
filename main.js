@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const modo = canvasManager.getCurrentModo();
 
             //Si entra a cualquier modo de dibujo
-            if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio' || modo === 'rectangulo' || modo === 'cubeta') {
+            if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio' || modo === 'rectangulo' || modo === 'cubeta' || modo === 'texto') {
                 canvasManager.drawPreview(startPoint, endPoint);
             }
         }
@@ -148,11 +148,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Agrega un event listener para el botón de deshacer
     document.getElementById("undo").onclick = function () {
-        canvasManager.history.undo();
+        canvasManager.history.undo(canvasManager.getCurrentCanvasContext());
     };
     // Agrega un event listener para el botón de rehacer
     document.getElementById("redo").onclick = function () {
-        canvasManager.history.redo();
+        canvasManager.history.redo(canvasManager.getCurrentCanvasContext());
     };
     //Cuando se de click en las flechas del teclado trasladar la figura, recibe dx y dy canvasManager.figuraSeleccionada.trasladarFigura
     document.addEventListener('keydown', function (event) {
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        canvasManager.history.renderizar(canvasManager.getCurrentCanvasContext(), 2);
+        canvasManager.history.renderizar(canvasManager.getCurrentCanvasContext());
 
     });
 

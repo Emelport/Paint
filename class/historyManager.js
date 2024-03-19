@@ -4,12 +4,7 @@ class HistoryManager {
   constructor() {
     this.undoStack = []; // Historial de acciones para deshacer
     this.redoStack = []; // Historial de acciones para rehacer
-    this.ctx = null;
   }
-
-    setContext(ctx) {
-        this.ctx = ctx;
-    }
 
    // Método para agregar una acción al historial de acciones
     addActionToHistory(action) {
@@ -17,40 +12,47 @@ class HistoryManager {
     }
 
     // Método para deshacer la última acción
-    undo() {    
+    undo(ctx) {    
         console.log("deshacer")
-        this.undoStack = this.redoStack
-        this.undoStack.pop()
+        //Almacenar el elemento que se va a sacar y guardarlo en la pila de undo
+        let elemento = this.redoStack.pop();
+        this.undoStack.push(elemento);
+
         console.log(this.undoStack)
-        this.renderizar(this.ctx,2);
+        this.renderizar(ctx);
 
     }
     // Método para rehacer la última acción deshecha
-    redo() {
-       console.log("rehacer")
-       this.renderizar(this.ctx,1)
+    redo(ctx) {
+        // Verificar si hay elementos para rehacer
+        if (this.redoStack.length > 0) {
+            // Sacar el último elemento de la pila de redo y guardarlo en la pila de undo
+            let elemento = this.redoStack.pop();
+            this.undoStack.push(elemento);
+
+            // Renderizar la acción
+            this.renderizar(ctx);
+        }
     }
+
+
     getUndoStack() {
         return this.undoStack;
     }
     getRedoStack() {
         return this.redoStack;
     }   
+    
+
     addActionToHistory(dato,tipo) {
         let elemento = {};
         elemento.dato = dato;
         elemento.tipo = tipo;
         this.redoStack.push(elemento);
     }
-    renderizar(ctx, option) {
-        // Seleccionar la pila apropiada según la opción
-        const actionsRender = (option === 1) ? this.redoStack : this.undoStack;
-        
-        // Limpiar el lienzo si se está renderizando desde la pila de deshacer
-        if (option !== 1) {
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        }
-    
+    renderizar(ctx) {
+        const actionsRender = this.redoStack;
+
         // Dibujar todas las figuras en la pila de acciones
         for (const action of actionsRender) {
             if (action.tipo === "figure") {

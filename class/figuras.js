@@ -11,28 +11,26 @@ class Figura {
 
     // Dibujar la figura (método abstracto)
     draw() {
-        // Implementar en las clases hijas
+        console.log("Método abstracto");
+        this.puntos.forEach(punto => {
+            this.drawPixel(punto.x, punto.y);
+        });
     }
+
     drawPixel(x, y) {
         // Obtener el contexto del lienzo
         const ctx = this.ctx;
-    
         // Obtener el color y el grosor
         const color = this.color;
         const grosor = this.grosor;
-    
         // Guardar el estado actual del contexto
         ctx.save();
-    
         // Ajustar el canal alfa del color para que sea el más bajo posible (0)
         const colorWithAlpha = color.replace(/[^,]+(?=\))/, '0');
-    
         // Establecer el color de relleno
         ctx.fillStyle = colorWithAlpha;
-    
         // Dibujar un rectángulo de un solo píxel en la posición dada
         ctx.fillRect(x, y, grosor, grosor);
-    
         // Restaurar el estado del contexto
         ctx.restore();
     }
@@ -79,9 +77,6 @@ class Figura {
         }
         return false;
     }
-    
-
-
     // Establecer el grosor del trazo
     setGrosor(newGrosor) {
         this.grosor = newGrosor;
@@ -106,6 +101,61 @@ class Figura {
         });
         this.puntosInternos = this.puntosInternos.map(punto => {
             return { x: punto.x + dx, y: punto.y + dy };
+        });
+    }
+
+    rotarFigura(angulo) {
+        // Obtener el centro de la figura
+        const centro = this.calcularCentro();
+        // Rotar la figura
+        this.puntos = this.puntos.map(punto => {
+            return this.rotarPunto(punto, centro, angulo);
+        });
+        this.puntosInternos = this.puntosInternos.map(punto => {
+            return this.rotarPunto(punto, centro, angulo);
+        });
+    }
+
+    escalarFigura(factor) {
+        // Obtener el centro de la figura
+        const centro = this.calcularCentro();
+        // Escalar la figura
+        this.puntos = this.puntos.map(punto => {
+            return this.escalarPunto(punto, centro, factor);
+        });
+        this.puntosInternos = this.puntosInternos.map(punto => {
+            return this.escalarPunto(punto, centro, factor);
+        });
+    }
+
+    calcularCentro() {
+        // Calcular el centro de la figura
+        const x = this.puntos.reduce((sum, punto) => sum + punto.x, 0) / this.puntos.length;
+        const y = this.puntos.reduce((sum, punto) => sum + punto.y, 0) / this.puntos.length;
+        return { x, y };
+    }
+
+    rotarPunto(punto, centro, angulo) {
+        // Rotar el punto en torno al centro
+        const x = centro.x + (punto.x - centro.x) * Math.cos(angulo) - (punto.y - centro.y) * Math.sin(angulo);
+        const y = centro.y + (punto.x - centro.x) * Math.sin(angulo) + (punto.y - centro.y) * Math.cos(angulo);
+        return { x, y };
+    }
+
+    escalarPunto(punto, centro, factor) {
+        // Escalar el punto en torno al centro
+        const x = centro.x + (punto.x - centro.x) * factor;
+        const y = centro.y + (punto.y - centro.y) * factor;
+        return { x, y };
+    }
+
+    // Limpiar la figura
+    clean() {
+        this.puntos.forEach(punto => {
+            this.borrarPixel(punto.x, punto.y);
+        });
+        this.puntosInternos.forEach(punto => {
+            this.borrarPixel(punto.x, punto.y);
         });
     }
 }
