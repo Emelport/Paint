@@ -424,8 +424,6 @@ class CanvasManager {
         }
 
         this.history.renderizar(this.getCurrentCanvasContext());
-
-    
     }
 
     moverFigura(start, end){
@@ -438,10 +436,28 @@ class CanvasManager {
             if (this.modo === "mover") {
                 figuraSeleccionada.trasladarFigura(end.x - start.x, end.y - start.y);
             } else if (this.modo === "rotar") {
-                figuraSeleccionada.rotarFigura(start, end);
+                //Se manda el ángulo de rotacion
+                //Calcular el angulo con los 2 puntos
+                figuraSeleccionada.rotarFigura(10);
+            
             }else if (this.modo === "escalar") {
-                figuraSeleccionada.escalarFigura(start, end);
+                //Se manda el factor de escala
+                //Calcular el factor con los 2 puntos
+                let factor = 1.1;
+                figuraSeleccionada.escalarFigura(factor);
+            } else if (this.modo === "HaciaAdelante") {
+                this.history.forward();
+            } else if (this.modo === "HaciaAtras") {
+                this.history.backward();
             }
+            else if (this.modo === "SubirCapa") {
+                this.history.uplayer();
+            }
+            else if (this.modo === "BajarCapa") {
+                this.history.downlayer();
+            }
+
+
             this.history.renderizar(ctx);
                 
         } else {
@@ -465,11 +481,15 @@ class CanvasManager {
     selectElement(start){
         // Obtener el contexto del canvas actual
         const ctx = this.getCurrentCanvasContext();
-        //Recorrer el arreglo de figuras desde el ultimo agregado hacia atras para ver si pertenece a esa figura utilizando el isinside
-        let figuraSeleccionada = this.history.seleccionarFigura(ctx,start);
-        // console.log(figuraSeleccionada);
-        this.figuraSeleccionada = figuraSeleccionada;
+        this.figuraSeleccionada= this.history.seleccionarFigura(ctx,start);
+        console.log(this.figuraSeleccionada);
+    }
 
+    limpiarCanvas(){
+        //Limpiar el layer1 y 2
+        const ctx = this.getCurrentCanvasContext();
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        this.layer2Ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     }
 }
 

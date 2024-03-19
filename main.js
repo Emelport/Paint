@@ -171,28 +171,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Agrega un event listener para el botón de deshacer
     document.getElementById("undo").onclick = function () {
+        canvasManager.limpiarCanvas();
         canvasManager.history.undo(canvasManager.getCurrentCanvasContext());
     };
     // Agrega un event listener para el botón de rehacer
     document.getElementById("redo").onclick = function () {
+        canvasManager.limpiarCanvas();
         canvasManager.history.redo(canvasManager.getCurrentCanvasContext());
+
     };
     //Cuando se de click en las flechas del teclado trasladar la figura, recibe dx y dy canvasManager.figuraSeleccionada.trasladarFigura
     document.addEventListener('keydown', function (event) {
-        if (canvasManager.figuraSeleccionada != null) {
-            if (event.key === "ArrowUp") {
-                canvasManager.figuraSeleccionada.trasladarFigura(0, -1);
-            }
-            if (event.key === "ArrowDown") {
-                canvasManager.figuraSeleccionada.trasladarFigura(0, 1);
-            }
-            if (event.key === "ArrowLeft") {
-                canvasManager.figuraSeleccionada.trasladarFigura(-1, 0);
-            }
-            if (event.key === "ArrowRight") {
-                canvasManager.figuraSeleccionada.trasladarFigura(1, 0);
-            }
-        }
+        // if (canvasManager.figuraSeleccionada != null) {
+        //     if (event.key === "ArrowUp") {
+        //         canvasManager.figuraSeleccionada.trasladarFigura(0, -1);
+        //     }
+        //     if (event.key === "ArrowDown") {
+        //         canvasManager.figuraSeleccionada.trasladarFigura(0, 1);
+        //     }
+        //     if (event.key === "ArrowLeft") {
+        //         canvasManager.figuraSeleccionada.trasladarFigura(-1, 0);
+        //     }
+        //     if (event.key === "ArrowRight") {
+        //         canvasManager.figuraSeleccionada.trasladarFigura(1, 0);
+        //     }
+        // }
 
         canvasManager.history.renderizar(canvasManager.getCurrentCanvasContext());
 

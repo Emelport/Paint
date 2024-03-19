@@ -93,7 +93,7 @@ class Figura {
     }
 
     trasladarFigura(dx, dy) {
-        console.log("Trasladar figura");
+        console.log("Trasladar figura" , dx, dy);
         // Trasladar los puntos de la figura para que se dibuje en una nueva posición
         this.puntos = this.puntos.map(punto => {
             return { x: punto.x + dx, y: punto.y + dy };
@@ -105,6 +105,7 @@ class Figura {
     }
 
     rotarFigura(angulo) {
+        console.log(angulo)
         // Obtener el centro de la figura
         const centro = this.calcularCentro();
         // Rotar la figura
