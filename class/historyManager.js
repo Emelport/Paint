@@ -6,85 +6,82 @@ class HistoryManager {
     this.redoStack = []; // Historial de acciones para rehacer
   }
 
-    forward(ctx,figura) {
-        //Mover hacia adelante
-        console.log("Hacia adelante")
-        //Buscar la figura en el arreglo de figuras
-        let actionsRender = this.redoStack
-        let index = actionsRender.indexOf(figura)
-        // console.log(index)
-        if (index > -1) {
-            //Si la figura se encuentra en el arreglo de figuras
-            //Eliminar la figura del arreglo de figuras
-            actionsRender.splice(index, 1);
-            //Agregar la figura al final del arreglo de figuras
-            actionsRender.push(figura)
+    forward(figura) {
+        console.log("Hacia adelante", figura);
+        let actionRender = this.redoStack;
+        
+        for (let i = 0; i < actionRender.length; i++) {
+            const action = actionRender[i];
+            
+            if (action.tipo === "figure" && action.dato === figura) {
+                console.log("posicion actual", i);
+                actionRender.splice(i, 1);
+                let objeto = {dato: figura, tipo: "figure"}
+                actionRender.push(objeto);
+                console.log("posicion nueva", actionRender.indexOf(figura));
+                break;
+            }
         }
-        this.renderizar(ctx);
     }
-
-    backward(ctx,figura) {
-        //Mover hacia atras
-        console.log("Hacia atras")
-        //Buscar la figura en el arreglo de figuras
-        let actionsRender = this.redoStack
-        let index = actionsRender.indexOf(figura)
-        // console.log(index)
-        if (index > -1) {
-            //Si la figura se encuentra en el arreglo de figuras
-            //Eliminar la figura del arreglo de figuras
-            actionsRender.splice(index, 1);
-            //Agregar la figura al inicio del arreglo de figuras
-            actionsRender.unshift(figura)
+    backward(figura) {
+        console.log("Hacia atrás", figura);
+        let actionRender = this.redoStack;
+        
+        for (let i = 0; i < actionRender.length; i++) {
+            const action = actionRender[i];
+            
+            if (action.tipo === "figure" && action.dato === figura) {
+                console.log("posición actual", i);
+                actionRender.splice(i, 1);
+                let objeto = { dato: figura, tipo: "figure" };
+                actionRender.unshift(objeto);
+                console.log("posición nueva", actionRender.indexOf(figura));
+                break;
+            }
         }
-
-        this.renderizar(ctx);
-
     }
-
-    uplayer(ctx,figura) {
-        //Subir capa
-        console.log("Subir capa")
-        //Buscar la figura en el arreglo de figuras
-        let actionsRender = this.redoStack
-        let index = actionsRender.indexOf(figura)
-        // console.log(index)
-        if (index > -1) {
-            //Si la figura se encuentra en el arreglo de figuras
-            //Eliminar la figura del arreglo de figuras
-            actionsRender.splice(index, 1);
-            //Agregar la figura al final del arreglo de figuras
-            actionsRender.splice(index+1, 0, figura)
+    
+    uplayer(figura) {
+        console.log("Subir capa", figura);
+        let actionRender = this.redoStack;
+        
+        for (let i = 0; i < actionRender.length; i++) {
+            const action = actionRender[i];
+            
+            if (action.tipo === "figure" && action.dato === figura) {
+                console.log("posición actual", i);
+                actionRender.splice(i, 1);
+                let objeto = { dato: figura, tipo: "figure" };
+                actionRender.splice(i + 1, 0, objeto);
+                console.log("posición nueva", actionRender.indexOf(figura));
+                break;
+            }
         }
-
-        this.renderizar(ctx);
-
     }
-
-    downlayer(ctx,figura) {
-        //Bajar capa
-        console.log("Bajar capa")
-        //Buscar la figura en el arreglo de figuras
-        let actionsRender = this.redoStack
-        let index = actionsRender.indexOf(figura)
-        // console.log(index)
-        if (index > -1) {
-            //Si la figura se encuentra en el arreglo de figuras
-            //Eliminar la figura del arreglo de figuras
-            actionsRender.splice(index, 1);
-            //Agregar la figura al final del arreglo de figuras
-            actionsRender.splice(index-1, 0, figura)
+    
+    downlayer(figura) {
+        console.log("Bajar capa", figura);
+        let actionRender = this.redoStack;
+        
+        for (let i = 0; i < actionRender.length; i++) {
+            const action = actionRender[i];
+            
+            if (action.tipo === "figure" && action.dato === figura) {
+                console.log("posición actual", i);
+                actionRender.splice(i, 1);
+                let objeto = { dato: figura, tipo: "figure" };
+                actionRender.splice(i - 1, 0, objeto);
+                console.log("posición nueva", actionRender.indexOf(figura));
+                break;
+            }
         }
-
-        this.renderizar(ctx);
-
     }
+    
+    
 
-    // Método para deshacer la última acción
     undo(ctx) {    
         if (this.redoStack.length > 0) {
             console.log("deshacer")
-            //Almacenar el elemento que se va a sacar y guardarlo en la pila de undo
             let elemento = this.redoStack.pop();
             this.undoStack.push(elemento);
 
@@ -93,7 +90,6 @@ class HistoryManager {
             this.renderizar(ctx);
         }
     }
-    // Método para rehacer la última acción deshecha
     redo(ctx) {
         // Verificar si hay elementos para rehacer
         if (this.undoStack.length > 0) {
@@ -105,15 +101,12 @@ class HistoryManager {
             this.renderizar(ctx);
         }
     }
-
     getUndoStack() {
         return this.undoStack;
     }
     getRedoStack() {
         return this.redoStack;
     }   
-    
-
     addActionToHistory(dato,tipo) {
         let elemento = {};
         elemento.dato = dato;
@@ -136,8 +129,6 @@ class HistoryManager {
             }
         }
     }
-    
-
     hexToRgb(hex) {
         //Recibe un color en formato hexadecimal y lo convierte a RGB
         //Ejemplo: #FFFFFF -> [255, 255, 255, 255]
@@ -154,28 +145,25 @@ class HistoryManager {
             255
         ] : null;
     }
-
-    seleccionarFigura(ctx,start,color){
-        //Seleccionar Figura
-        //Recorrer el arreglo de acciones del tipo figura para saber cual es la ultima
-        let actionsRender = []
-        let figuraSeleccionada = null
-        actionsRender = this.redoStack
-   
+    seleccionarFigura(ctx, start) {
+        // Seleccionar Figura
+        let actionsRender = this.redoStack;
+        let figuraSeleccionada = null;
+        
+        console.log(actionsRender)
+        console.log(this.undoStack)
         actionsRender.forEach(action => {
             if (action.tipo === "figure") {
-                // console.log(action.dato.isInside(start))
-                if (action.dato.isInside(start)){
-                    // console.log(action.dato)
-                    figuraSeleccionada = action.dato
+                // Verificar si las coordenadas del punto están dentro de la figura
+                if (action.dato.isInside(start)) {
+                    figuraSeleccionada = action.dato;
                 }
-            } else if (action.tipo === "fill") {
-  
             }
         });
-
-        return figuraSeleccionada
+    
+        return figuraSeleccionada;
     }
+    
 
     
 }

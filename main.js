@@ -75,6 +75,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("elipse").onclick = function () {
         canvasManager.cambiarModo('elipse');
     }
+    document.getElementById("trapecio").onclick = function () {
+        canvasManager.cambiarModo('trapecio');
+    }
     document.getElementById("colorPicker").onchange = function () {
         canvasManager.cambiarColor(this.value);
     };     

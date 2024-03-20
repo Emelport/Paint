@@ -427,34 +427,29 @@ class CanvasManager {
     }
 
     moverFigura(start, end){
-        // Obtener el contexto del canvas actual
-        const ctx = this.getCurrentCanvasContext();
-        //Recorrer el arreglo de figuras desde el ultimo agregado hacia atras para ver si pertenece a esa figura utilizando el isinside
-        let figuraSeleccionada = this.figuraSeleccionada
-        // console.log(figuraSeleccionada);
-        if (figuraSeleccionada){
+
+         // Obtener el contexto del canvas actual
+         const ctx = this.getCurrentCanvasContext();
+         //Recorrer el arreglo de figuras desde el ultimo agregado hacia atras para ver si pertenece a esa figura utilizando el isinside
+         let figuraSeleccionada = this.history.seleccionarFigura(ctx,start);
+         if (figuraSeleccionada){
             if (this.modo === "mover") {
                 figuraSeleccionada.trasladarFigura(end.x - start.x, end.y - start.y);
             } else if (this.modo === "rotar") {
-                //Se manda el ángulo de rotacion
-                //Calcular el angulo con los 2 puntos
                 figuraSeleccionada.rotarFigura(10);
-            
             }else if (this.modo === "escalar") {
-                //Se manda el factor de escala
-                //Calcular el factor con los 2 puntos
                 let factor = 1.1;
                 figuraSeleccionada.escalarFigura(factor);
             } else if (this.modo === "HaciaAdelante") {
-                this.history.forward();
+                this.history.forward(figuraSeleccionada);
             } else if (this.modo === "HaciaAtras") {
-                this.history.backward();
+                this.history.backward(figuraSeleccionada);
             }
             else if (this.modo === "SubirCapa") {
-                this.history.uplayer();
+                this.history.uplayer(figuraSeleccionada);
             }
             else if (this.modo === "BajarCapa") {
-                this.history.downlayer();
+                this.history.downlayer(figuraSeleccionada);
             }
 
 

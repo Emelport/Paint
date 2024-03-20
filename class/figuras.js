@@ -56,7 +56,7 @@ class Figura {
                 this.estaRellena = false
                 return
             }
-            console.log(fillColor)
+            // console.log(fillColor)
             this.color = fillColor
             //Dibujar todos los puntos internos
             this.puntosInternos.forEach(punto => {
