@@ -6,6 +6,23 @@ class HistoryManager {
     this.redoStack = []; // Historial de acciones para rehacer
   }
 
+
+    sacarFigura(figura) {
+        let actionRender = this.redoStack;
+        for (let i = 0; i < actionRender.length; i++) {
+            const action = actionRender[i];
+            if (action.tipo === "figure" && action.dato === figura) {
+                actionRender.splice(i, 1);
+                break;
+            }
+        }
+
+        //Buscar la figura en la pila de acciones y verificar si se encuentra e imprimir que se eliminó
+        console.log("Se eliminó la figura", figura);
+        console.log(this.redoStack)
+    }
+
+
     forward(figura) {
         console.log("Hacia adelante", figura);
         let actionRender = this.redoStack;
@@ -113,6 +130,9 @@ class HistoryManager {
         elemento.tipo = tipo;
         this.redoStack.push(elemento);
     }
+
+
+
     renderizar(ctx) {
         const actionsRender = this.redoStack;
         // Dibujar todas las figuras en la pila de acciones

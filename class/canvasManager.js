@@ -201,8 +201,16 @@ class CanvasManager {
         //Sumarle al arreglo de puntos los puntos de la linea
         this.freePixels = this.freePixels.concat(puntosLinea);
         
-
     }
+    // erasePixel(start,end){
+    //     //Borrar pixel por pixel
+    //     const ctx = this.getCurrentCanvasContext();
+    //     let line = new Linea(ctx, "#FFFFFF", this.grosor, start, end);
+    //     let puntosLinea = line.draw(start, end);
+    //     //Sumarle al arreglo de puntos los puntos de la linea
+    //     this.freePixels = this.freePixels.concat(puntosLinea);
+    // }
+
     drawTrapecio(start,end){
         const ctx = this.getCurrentCanvasContext();
         const trapecio = new Trapecio(ctx, this.color, this.grosor, start, end);
@@ -356,9 +364,10 @@ class CanvasManager {
         else if (this.modo === "trapecio") {
             this.drawTrapecio(start, end);
         }
-        else if (this.modo === "lapiz") {
+        else if (this.modo === "lapiz" || this.modo === "pixelEraser") {
            this.drawPixel(start,end);
         }
+
 
         // this.history.renderizar(this.getCurrentCanvasContext(),1);
 
@@ -370,39 +379,38 @@ class CanvasManager {
 
         if (this.modo === "linea") {
             const line = this.drawLine(start, end);
-            this.figuras.push(line);
             this.history.addActionToHistory(line, "figure");
 
+        }  else if (this.modo === "pixelEraser") {
+              //guardar el dibujo libre en history action, creando una nueva figura
+              const F = new Figura(ctx, "#FFFFFF", this.grosor);
+              F.puntos = this.freePixels;
+              console.log(F);
+              this.history.addActionToHistory(F, "figure");
+              this.freePixels = [];
         } else if (this.modo === "cuadrado") {
             const square = this.drawSquare(start, end);
-            this.figuras.push(square);
             this.history.addActionToHistory(square, "figure");
         } else if (this.modo === "texto") {
             const text = this.drawText(start, end);
-            this.figuras.push(text);
             this.history.addActionToHistory(text, "figure");
             
         } else if (this.modo === "rectangulo") {
             const rectangle = this.drawRectangle(start, end);
-            this.figuras.push(rectangle);
             this.history.addActionToHistory(rectangle, "figure");
         } else if (this.modo === "circulo") {
             const circle = this.drawCircle(start, end);
-            this.figuras.push(circle);
             this.history.addActionToHistory(circle, "figure");
         } else if (this.modo === "poligono") {
             const poligonos = this.drawPolygon(start, end);
-            this.figuras.push(poligonos);
             this.history.addActionToHistory(poligonos, "figure");
 
         } else if (this.modo === "elipse") {
             const elipse = this.drawElips(start, end);
-            this.figuras.push(elipse);
             this.history.addActionToHistory(elipse, "figure");
         }
         else if (this.modo === "trapecio") {
             const trapecio = this.drawTrapecio(start, end);
-            this.figuras.push(trapecio);
             this.history.addActionToHistory(trapecio, "figure");
         }
         else if (this.modo === "lapiz") {
@@ -450,9 +458,10 @@ class CanvasManager {
             }
             else if (this.modo === "BajarCapa") {
                 this.history.downlayer(figuraSeleccionada);
+            }else if (this.modo === "borrarFigura") {
+                this.history.sacarFigura(figuraSeleccionada);
             }
-
-
+            
             this.history.renderizar(ctx);
                 
         } else {

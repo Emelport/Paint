@@ -57,6 +57,12 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("eraser").onclick = function () {
         canvasManager.cambiarModo('borrar');
     };
+    document.getElementById("figureEraser").onclick = function () {
+        canvasManager.cambiarModo('borrarFigura');
+    };
+    document.getElementById("pixelEraser").onclick = function () {
+        canvasManager.cambiarModo('pixelEraser');
+    };
     document.getElementById("pencil").onclick = function () {
         canvasManager.cambiarModo('lapiz');
     };
@@ -71,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //Salga un selector de numeros y dependiendo del numero seleciconado ejecutar setLadosPoligono
         var lados = prompt("Ingrese el numero de lados del poligono");
         canvasManager.setLadosPoligono(lados);
-    };3
+    };
     document.getElementById("elipse").onclick = function () {
         canvasManager.cambiarModo('elipse');
     }
@@ -137,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
             //Si entra a cualquier modo de dibujo
             if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio' || modo === 'rectangulo' || modo === 'cubeta' || modo === 'texto') {
                 canvasManager.drawPreview(startPoint, endPoint);
-            } else if (modo === 'lapiz') {
+            } else if (modo === 'lapiz' || modo === 'pixelEraser') {
                 canvasManager.drawPreview(startPoint, endPoint);
                 startPoint = endPoint;
             }
@@ -149,11 +155,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const modo = canvasManager.getCurrentModo();
 
         //Si entra a cualquier modo de dibujo
-        if (modo === 'linea' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio' || modo === 'rectangulo' || modo === 'cubeta' || modo === 'texto') {
+        if (modo === 'linea' || modo === 'pixelEraser' || modo === 'cuadrado' || modo === 'borrar' || modo === 'lapiz' || modo === 'circulo' || modo === 'poligono' || modo === 'elipse' || modo === 'trapecio' || modo === 'rectangulo' || modo === 'cubeta' || modo === 'texto') {
             canvasManager.draw(startPoint, endPoint);
         }else if (modo === 'cursor') {
             canvasManager.selectElement(startPoint);
-        }else if (modo === 'mover' || modo === 'rotar' || modo === 'HaciaAdelante' || modo === 'HaciaAtras' || modo === 'SubirCapa' || modo === 'BajarCapa' || modo === 'escalar') {
+        }else if (modo === 'mover' || modo === 'rotar' || modo === 'HaciaAdelante' || modo === 'HaciaAtras' || modo === 'SubirCapa' || modo === 'BajarCapa' || modo === 'escalar' || modo === 'borrarFigura') {
+            canvasManager.limpiarCanvas();
             canvasManager.moverFigura(startPoint, endPoint);
         }
         canvasManager.setDrawing(false);
@@ -194,22 +201,35 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("export").onclick = function () {
         canvasManager.exportarArchivo();
     };
+
+    let teclaPresionada = false;
+
+    document.addEventListener("keyup", event => {
+        teclaPresionada = false;
+    });
+
     //Cuando se de click en las flechas del teclado trasladar la figura, recibe dx y dy canvasManager.figuraSeleccionada.trasladarFigura
     document.addEventListener('keydown', function (event) {
-        // if (canvasManager.figuraSeleccionada != null) {
-        //     if (event.key === "ArrowUp") {
-        //         canvasManager.figuraSeleccionada.trasladarFigura(0, -1);
-        //     }
-        //     if (event.key === "ArrowDown") {
-        //         canvasManager.figuraSeleccionada.trasladarFigura(0, 1);
-        //     }
-        //     if (event.key === "ArrowLeft") {
-        //         canvasManager.figuraSeleccionada.trasladarFigura(-1, 0);
-        //     }
-        //     if (event.key === "ArrowRight") {
-        //         canvasManager.figuraSeleccionada.trasladarFigura(1, 0);
-        //     }
-        // }
+
+        if (!teclaPresionada) {
+            teclaPresionada = true;
+            if (canvasManager.figuraSeleccionada != null) {
+                console.log(canvasManager.figuraSeleccionada)
+
+                if (event.key === "ArrowUp") {
+                    canvasManager.figuraSeleccionada.trasladarFigura(0, -1);
+                }
+                if (event.key === "ArrowDown") {
+                    canvasManager.figuraSeleccionada.trasladarFigura(0, 1);
+                }
+                if (event.key === "ArrowLeft") {
+                    canvasManager.figuraSeleccionada.trasladarFigura(-1, 0);
+                }
+                if (event.key === "ArrowRight") {
+                    canvasManager.figuraSeleccionada.trasladarFigura(1, 0);
+                }
+            }
+        }
 
         //Si es ctrl + z deshacer
         if (event.ctrlKey && event.key === "z") {

@@ -90,19 +90,36 @@ class Figura {
             }
         }
     }
-
     trasladarFigura(dx, dy) {
-        console.log("Trasladar figura" , dx, dy);
-        // Trasladar los puntos de la figura para que se dibuje en una nueva posición
-        this.puntos = this.puntos.map(punto => {
-            return { x: punto.x + dx, y: punto.y + dy };
-        });
-        this.puntosInternos = this.puntosInternos.map(punto => {
-            return { x: punto.x + dx, y: punto.y + dy };
-        });
+        console.log("Trasladar figura", dx, dy);
+        
+        const copiaPuntos = this.puntos;
+        const copiaPuntosInternos = this.puntosInternos;
+        // Trasladar los puntos existentes en la figura
+       for (let i = 0; i < copiaPuntos.length; i++) {
+            copiaPuntos[i].x = copiaPuntos[i].x - dx;
+            copiaPuntos[i].y = copiaPuntos[i].y - dy;
+        }
+        //Vaciar el arreglo de puntos
+        this.puntos = [];
+        //Agregar los puntos trasladados
+        this.puntos = copiaPuntos;
 
+        // Trasladar los puntos internos existentes en la figura   
+        for (let i = 0; i < copiaPuntosInternos.length; i++) {
+            copiaPuntosInternos[i].x = copiaPuntosInternos[i].x - dx;
+            copiaPuntosInternos[i].y = copiaPuntosInternos[i].y - dy;
+        }
+        //Vaciar el arreglo de puntos internos
+        this.puntosInternos = [];
+        //Agregar los puntos internos trasladados
+        this.puntosInternos = copiaPuntosInternos;
+
+        console.log(this.puntos);
+        console.log(this.puntosInternos);
     }
-
+    
+    
     rotarFigura(angulo) {
         console.log(angulo)
         // Obtener el centro de la figura
@@ -158,6 +175,7 @@ class Figura {
             this.borrarPixel(punto.x, punto.y);
         });
     }
+
 }
 
 export { Figura };
