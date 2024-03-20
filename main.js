@@ -181,7 +181,18 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("redo").onclick = function () {
         canvasManager.limpiarCanvas();
         canvasManager.history.redo(canvasManager.getCurrentCanvasContext());
-
+    };
+    // Agrega un event listener para el botón de abrir
+    document.getElementById("open").onclick = function () {
+        canvasManager.abrirArchivo();
+    };
+    // Agrega un event listener para el botón de guardar
+    document.getElementById("save").onclick = function () {
+        canvasManager.guardarArchivo();
+    };
+    // Agrega un event listener para el botón de exportar
+    document.getElementById("export").onclick = function () {
+        canvasManager.exportarArchivo();
     };
     //Cuando se de click en las flechas del teclado trasladar la figura, recibe dx y dy canvasManager.figuraSeleccionada.trasladarFigura
     document.addEventListener('keydown', function (event) {
@@ -199,6 +210,18 @@ document.addEventListener("DOMContentLoaded", function () {
         //         canvasManager.figuraSeleccionada.trasladarFigura(1, 0);
         //     }
         // }
+
+        //Si es ctrl + z deshacer
+        if (event.ctrlKey && event.key === "z") {
+            canvasManager.limpiarCanvas();
+            canvasManager.history.undo(canvasManager.getCurrentCanvasContext());
+        }
+
+        //Si es ctrl + y rehacer.
+        if (event.ctrlKey && event.key === "y") {
+            canvasManager.limpiarCanvas();
+            canvasManager.history.redo(canvasManager.getCurrentCanvasContext());
+        }
 
         canvasManager.history.renderizar(canvasManager.getCurrentCanvasContext());
 

@@ -486,7 +486,188 @@ class CanvasManager {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         this.layer2Ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     }
-}
+
+    exportarArchivo() {
+        console.log("Exportar archivo");
+        // Crear el div modal
+        const modal = document.createElement('div');
+        modal.id = 'modal';
+        modal.classList.add('modal');
+      
+        // Crear los botones
+        const pngButton = document.createElement('button');
+        pngButton.textContent = 'Exportar PNG';
+        pngButton.id = 'pngButton';
+      
+        const pdfButton = document.createElement('button');
+        pdfButton.textContent = 'Exportar PDF';
+        pdfButton.id = 'pdfButton';
+      
+        // Agregar los botones al modal
+        modal.appendChild(pngButton);
+        modal.appendChild(pdfButton);
+      
+        // Agregar el modal al cuerpo del documento
+        document.body.appendChild(modal);
+      
+        // Establecer eventos de clic para los botones
+        pngButton.addEventListener('click', () => this.exportarCanvas('png'));
+        pdfButton.addEventListener('click', () => this.exportarCanvas('pdf'));
+    }
+      
+    exportarCanvas(formato) {
+        // Eliminar el modal
+        const modal = document.getElementById('modal');
+        modal.remove();
+        // Obtener el canvas actual
+        const canvas = this.getCurrentCanvas();
+        const ctx = canvas.getContext('2d');
+    
+        if (formato.toLowerCase() === 'png') {
+            // Convertir el canvas a imagen PNG y descargar
+            const link = document.createElement('a');
+            link.download = 'canvas.png';
+            link.href = canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
+            link.click();
+        } else if (formato.toLowerCase() === 'pdf') {
+            // Separar el elemento canvas 
+            const canvas = this.getCurrentCanvas();
+            const ctx = canvas.getContext('2d');
+            const data = canvas.toDataURL('image/png');
+            const img = new Image();
+            img.src = data;
+
+            //Imprimir con la impresora microsft print to pdf sin preguntar
+            var printWindow = window.open('', '_blank');
+            printWindow.document.open();
+            printWindow.document.write('<html><head><title>MI DIBUJO</title></head><body>');
+            printWindow.document.write('<img src="' + data + '" onload="window.print();window.close()" />');
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+
+        } else {
+            console.error('Formato no válido');
+            return;
+        }
+    }
+    
+    guardarArchivo() {
+        // A partir de redoStack y undoStack, guardar el estado actual del canvas en un archivo JSON
+        const data = {
+            undoStack: this.history.undoStack,
+            redoStack: this.history.redoStack.map(action => {
+                // Mapear cada acción en redoStack
+                if (action.tipo === "figure") {
+                    // Si es una figura, guardar el tipo de figura y los datos necesarios para reconstruirla
+                    return {
+                        tipo: "figure",
+                        figura: {
+                            tipoFigura: action.dato.constructor.name, // Guardar el nombre de la clase de la figura
+                            datos: action.dato // Guardar los datos de la figura
+                        }
+                    };
+                } else {
+                    // Si no es una figura, simplemente devolver la acción tal como está
+                    return action;
+                }
+            })
+        };
+    
+        const jsonData = JSON.stringify(data);
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+    
+        const link = document.createElement('a');
+        link.download = 'canvas.json';
+        link.href = url;
+        link.click();
+    
+        URL.revokeObjectURL(url);
+    }
+    
+    abrirArchivo() {
+        // Abrir un archivo JSON y restaurar el estado del canvas
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.click();
+    
+        input.addEventListener('change', () => {
+            const file = input.files[0];
+            const reader = new FileReader();
+    
+            reader.onload = () => {
+                const data = JSON.parse(reader.result);
+                this.history.undoStack = data.undoStack;
+                this.history.redoStack = data.redoStack.map(action => {
+                    // Mapear cada acción en redoStack
+                    if (action.tipo === "figure") {
+                        // Si es una figura, reconstruir la figura
+                        const figuraData = action.figura;
+                        const tipoFigura = figuraData.tipoFigura;
+                        const datos = figuraData.datos;
+    
+                        // Aquí debes manejar la reconstrucción de la figura según el tipoFigura y los datos proporcionados
+                        let figura;
+                        switch (tipoFigura) {
+                            case "Cuadrado":
+                                figura = new Cuadrado(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
+                                break;
+                            case "Circulo":
+                                figura = new Circulo(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
+                                break;
+                            case "Poligonos":
+                                figura = new Poligonos(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end, datos.lados);
+                                break;
+                            case "Elipse":
+                                figura = new Elipse(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
+                                break;
+                            case "Trapecio":
+                                figura = new Trapecio(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
+                                break;
+                            case "Rectangulo":
+                                figura = new Rectangulo(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
+                                break;
+                            case "Texto":
+                                //Arreglar texto
+                                figura = new Texto(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
+                                break;
+                            case "Linea":
+                                figura = new Linea(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
+                                break;
+                            case "Figura":
+                                figura = new Figura(this.getCurrentCanvasContext(), datos.color, datos.grosor);
+                                figura.puntos = datos.puntos;
+                                break;
+
+
+
+                            // Agrega más casos según los tipos de figura que tengas
+                            default:
+                                console.error("Tipo de figura desconocido:", tipoFigura);
+                                break;
+                        }
+    
+                        return {
+                            tipo: "figure",
+                            dato: figura
+                        };
+                    } else {
+                        // Si no es una figura, simplemente devolver la acción tal como está
+                        return action;
+                    }
+                });
+    
+                console.log(this.history.undoStack);
+                console.log(this.history.redoStack);
+                this.history.renderizar(this.getCurrentCanvasContext());
+            };
+    
+            reader.readAsText(file);
+        });
+    }
+    
+}      
 
 // Exportar la clase
 export { CanvasManager };

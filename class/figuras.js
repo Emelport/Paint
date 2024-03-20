@@ -21,8 +21,7 @@ class Figura {
         const ctx = this.ctx;
         const color = this.color;
         const grosor = this.grosor;
-        // Guardar el estado actual del contexto
-        ctx.save();
+
         // Ajustar el canal alfa del color para que sea el más bajo posible (0)
         const colorWithAlpha = color.replace(/[^,]+(?=\))/, '0');
         // Establecer el color de relleno
