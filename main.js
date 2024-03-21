@@ -229,6 +229,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     canvasManager.figuraSeleccionada.trasladarFigura(1, 0);
                 }
             }
+            canvasManager.history.renderizar(canvasManager.getCurrentCanvasContext());
+
         }
 
         //Si es ctrl + z deshacer

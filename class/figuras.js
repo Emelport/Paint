@@ -117,6 +117,7 @@ class Figura {
 
         console.log(this.puntos);
         console.log(this.puntosInternos);
+
     }
     
     

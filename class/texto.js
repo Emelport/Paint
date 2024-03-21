@@ -5,19 +5,25 @@ class Texto extends Figura {
     constructor(ctx, color, grosor, x, y) {
         super(ctx, color, grosor);
         // Posición del texto
-        this.x = x;
-        this.y = y;
+        this.start = x;
+        this.end = y;
         // Texto a dibujar
-        this.texto = prompt('Por favor, ingrese el texto que desea dibujar:', '');
+        this.texto ="";
 
         // Color Blanco
-        let colorR = '#fffffff';
-        const rectangulo = new Rectangulo(ctx, colorR, this.grosor, x, y);
-        this.rectangulo = rectangulo;
+
     }
 
     // Dibujar el texto
     draw() {
+
+        if (!this.texto){
+            this.texto= prompt('Por favor, ingrese el texto que desea dibujar:', '');
+        }
+
+        let colorR = '#ffffff';
+        const rectangulo = new Rectangulo(this.ctx, colorR, this.grosor, this.start, this.end);
+        this.rectangulo = rectangulo;
         // Dibujar el rectángulo transparente
         this.rectangulo.draw();
 

@@ -7,6 +7,8 @@ class HistoryManager {
   }
 
 
+    
+
     sacarFigura(figura) {
         let actionRender = this.redoStack;
         for (let i = 0; i < actionRender.length; i++) {
@@ -182,6 +184,73 @@ class HistoryManager {
         });
     
         return figuraSeleccionada;
+    }
+    
+    trasladarFigura(start, end, figuraSeleccionada){
+
+        // Hacer que se elimine la figura y redibuje en la nueva posición y se guarde en el historial en la misma posición
+        this.sacarFigura(figuraSeleccionada);
+        // Calcular el desplazamiento
+        let dx = end.x - start.x;
+        let dy = end.y - start.y;
+        
+        // Aplicar el desplazamiento a la posición inicial y final para mantener el tamaño de la figura
+        figuraSeleccionada.start.x += dx;
+        figuraSeleccionada.start.y += dy;
+        figuraSeleccionada.end.x += dx;
+        figuraSeleccionada.end.y += dy;
+        
+        // Redibujar la figura en la nueva posición
+        figuraSeleccionada.puntosInternos = [];
+        figuraSeleccionada.draw();
+    
+        this.addActionToHistory(figuraSeleccionada,"figure");
+    }
+    rotarFigura(figuraSeleccionada) {
+        // Rotar de 10 en 10 grados
+        const angulo = 10 * (Math.PI / 180); // Convertir a radianes
+    
+        // Sacar figura
+        this.sacarFigura(figuraSeleccionada);
+        figuraSeleccionada.puntosInternos = [];
+    
+        // Arreglo para almacenar las coordenadas de los puntos del cuadrado
+        let nuevosPuntos = [];
+    
+        // Calcular el centro de la figura
+        const centro = {
+            x: (figuraSeleccionada.start.x + figuraSeleccionada.end.x) / 2,
+            y: (figuraSeleccionada.start.y + figuraSeleccionada.end.y) / 2
+        };
+    
+        // Rotar cada punto de la figura
+        for (let i = 0; i < figuraSeleccionada.puntos.length; i++) {
+            const punto = figuraSeleccionada.puntos[i];
+            const x = punto.x - centro.x;
+            const y = punto.y - centro.y;
+            const newX = centro.x + x * Math.cos(angulo) - y * Math.sin(.5);
+            const newY = centro.y + x * Math.sin(angulo) + y * Math.cos(.5);
+            nuevosPuntos.push({ x: newX, y: newY });
+        }
+    
+        // Asignar las nuevas coordenadas al arreglo de puntos de la figura
+        figuraSeleccionada.puntos = nuevosPuntos;
+    
+        // Redibujar la figura en la nueva posición
+        figuraSeleccionada.draw(); // Dibujar el cuadrado rotado
+        this.addActionToHistory(figuraSeleccionada, "figure");
+    }
+    
+    
+    escalarFigura( end, figuraSeleccionada) {
+        // Sacar figura
+        this.sacarFigura(figuraSeleccionada);
+        figuraSeleccionada.end = end;
+        figuraSeleccionada.puntosInternos = [];
+        figuraSeleccionada.draw();
+
+        this.addActionToHistory(figuraSeleccionada,"figure");
+
     }
     
 

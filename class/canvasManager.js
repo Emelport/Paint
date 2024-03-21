@@ -442,12 +442,13 @@ class CanvasManager {
          let figuraSeleccionada = this.history.seleccionarFigura(ctx,start);
          if (figuraSeleccionada){
             if (this.modo === "mover") {
-                figuraSeleccionada.trasladarFigura(end.x - start.x, end.y - start.y);
+                // figuraSeleccionada.trasladarFigura(end.x - start.x, end.y - start.y);
+                this.history.trasladarFigura(start,end,figuraSeleccionada);
             } else if (this.modo === "rotar") {
-                figuraSeleccionada.rotarFigura(10);
+                // figuraSeleccionada.rotarFigura(10);
+                this.history.rotarFigura(figuraSeleccionada);
             }else if (this.modo === "escalar") {
-                let factor = 1.1;
-                figuraSeleccionada.escalarFigura(factor);
+                this.history.escalarFigura(end,figuraSeleccionada);
             } else if (this.modo === "HaciaAdelante") {
                 this.history.forward(figuraSeleccionada);
             } else if (this.modo === "HaciaAtras") {
