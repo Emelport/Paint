@@ -8,9 +8,17 @@ class Circulo extends Figura {
   }
 
   draw() {
+    if (!this.isValidData()) return;
+
+    const radius = this.calculateRadius(this.start, this.end);
+    this.drawBressenhamCircle(this.start, radius);
+    this.calculateInnerPoints(this.start, radius);
+  }
+
+  isValidData() {
     if (!this.ctx) {
       console.error("El contexto del canvas no es válido.");
-      return;
+      return false;
     }
 
     if (
@@ -20,42 +28,16 @@ class Circulo extends Figura {
       typeof this.end.y !== "number"
     ) {
       console.error("Las coordenadas y el radio deben ser números.");
-      return;
+      return false;
     }
 
-    // Limpiar el canvas antes de dibujar
-    // this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-
-    // Ajustar el radio vertical para que coincida con el radio horizontal
-    const radius = Math.sqrt(
-      Math.pow(this.end.x - this.start.x, 2) +
-      Math.pow(this.end.y - this.start.y, 2)
-    ) / 2;
-
-    // Dibujar el círculo
-    this.drawBressenhamCircle(this.start, radius);
+    return true;
   }
 
-  drawPoints(centerX, centerY, x, y) {
-    this.drawPixel(centerX + x, centerY + y); // Octante 1
-    this.drawPixel(centerX - x, centerY + y); // Octante 2
-    this.drawPixel(centerX + x, centerY - y); // Octante 8
-    this.drawPixel(centerX - x, centerY - y); // Octante 7
-    
-    // Los puntos simétricos en otros octantes
-    this.drawPixel(centerX + y, centerY + x); // Octante 3
-    this.drawPixel(centerX - y, centerY + x); // Octante 4
-    this.drawPixel(centerX + y, centerY - x); // Octante 6
-    this.drawPixel(centerX - y, centerY - x); // Octante 5
-
-    this.puntos.push({ x: centerX + x, y: centerY + y });
-    this.puntos.push({ x: centerX - x, y: centerY + y });
-    this.puntos.push({ x: centerX + x, y: centerY - y });
-    this.puntos.push({ x: centerX - x, y: centerY - y });
-    this.puntos.push({ x: centerX + y, y: centerY + x });
-    this.puntos.push({ x: centerX - y, y: centerY + x });
-    this.puntos.push({ x: centerX + y, y: centerY - x });
-    this.puntos.push({ x: centerX - y, y: centerY - x });
+  calculateRadius(start, end) {
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    return Math.sqrt(dx * dx + dy * dy) / 2;
   }
 
   drawBressenhamCircle(center, radius) {
@@ -64,34 +46,51 @@ class Circulo extends Figura {
     let P = 1 - radius;
 
     while (x >= y) {
-        this.drawPoints(center.x, center.y, x, y);
-        if (P <= 0) {
-            P = P + 2 * y + 1;
-        } else {
-            x--;
-            P = P + 2 * y - 2 * x + 1;
-        }
-        y++;
+      this.plotCirclePoints(center.x, center.y, x, y);
+      y++;
+
+      if (P <= 0) {
+        P += 2 * y + 1;
+      } else {
+        x--;
+        P += 2 * (y - x) + 1;
+      }
     }
-    
-    // Limpiar la lista de puntos internos
+  }
+
+  plotCirclePoints(centerX, centerY, x, y) {
+    const points = [
+      [centerX + x, centerY + y], // Octante 1
+      [centerX - x, centerY + y], // Octante 2
+      [centerX + x, centerY - y], // Octante 8
+      [centerX - x, centerY - y], // Octante 7
+      [centerX + y, centerY + x], // Octante 3
+      [centerX - y, centerY + x], // Octante 4
+      [centerX + y, centerY - x], // Octante 6
+      [centerX - y, centerY - x], // Octante 5
+    ];
+
+    points.forEach(([x, y]) => {
+      this.drawPixel(x, y);
+      this.puntos.push({ x, y });
+    });
+  }
+
+  calculateInnerPoints(center, radius) {
     this.puntosInternos = [];
 
-    // Calcular los puntos internos utilizando la ecuación del círculo
-    for (let i = -radius; i <= radius; i++) {
-        for (let j = -radius; j <= radius; j++) {
-            // Calcular la distancia desde el punto al centro del círculo
-            const distanceSquared = i * i + j * j;
-            if (distanceSquared <= radius * radius) {
-                // Si la distancia es menor o igual al radio del círculo, agregar el punto a la lista de puntos internos
-                this.puntosInternos.push({ x: center.x + i, y: center.y + j });
-            }
+    const radiusSquared = radius * radius;
+    for (let y = -radius; y <= radius; y++) {
+      for (let x = -radius; x <= radius; x++) {
+        if (x * x + y * y <= radiusSquared) {
+          this.puntosInternos.push({
+            x: center.x + x,
+            y: center.y + y,
+          });
         }
+      }
     }
-}
-
-
-
+  }
 }
 
 export { Circulo };

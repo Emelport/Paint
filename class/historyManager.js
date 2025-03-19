@@ -133,16 +133,18 @@ class HistoryManager {
         this.redoStack.push(elemento);
     }
 
-
-
     renderizar(ctx) {
         const actionsRender = this.redoStack;
         // Dibujar todas las figuras en la pila de acciones
         for (const action of actionsRender) {
             if (action.tipo === "figure") {
                 const figura = action.dato;
-                // console.log(figura)
-                figura.draw();
+                
+                //Recorrer todas las coordenadas de la figura y dibujarlas
+                for (let i = 0; i < figura.puntos.length; i++) {
+                    const punto = figura.puntos[i];
+                    figura.drawPixel(punto.x, punto.y);
+                }
     
                 // Si la figura está rellena, rellenarla después de dibujarla
                 if (figura.estaRellena) {
@@ -151,6 +153,7 @@ class HistoryManager {
             }
         }
     }
+
     hexToRgb(hex) {
         //Recibe un color en formato hexadecimal y lo convierte a RGB
         //Ejemplo: #FFFFFF -> [255, 255, 255, 255]

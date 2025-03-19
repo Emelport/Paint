@@ -32,26 +32,15 @@ body {
 }
 
 .canvas-container {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-.canvas {
-    border: 1px solid #ccc;
-    /* Tenga siempre la opacidad maxima todo lo que se dibuje ahi */
-    background-color: rgba(255, 255, 255, 0); /* Color blanco con opacidad alfa 0 */
-    
+    padding: 0;
 }
-
 
 /* Estilos específicos para la disposición que solicitaste */
 .toolbox {
     overflow-x: auto;
     flex-shrink: 0;
 }
-
 
 
 .toolbox {
@@ -71,30 +60,21 @@ body {
     /* puntero */
     cursor: pointer;
 }
-.canvas-container {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 /* Mantener los canvas encimados exactamente en la misma posicion */
 .canvas {
     border: 1px solid #ccc;
     /* Tenga siempre la opacidad máxima todo lo que se dibuje ahí */
-    background-color: rgba(255, 255, 255, 0); /* Color blanco con opacidad alfa 0 */
-    position: absolute;
-    top: 13%; /* Ajusta según tus necesidades */
     z-index: 1; /* Asegura que ambos estén en el mismo plano */
+
 }
 
 
-
 .undoRedo {
-    position: absolute;
+    position: fixed;
     bottom: 0;
-    left: 8%;
-    transform: translateX(-50%);
+    left: 0;
+    z-index: 9999;
 }
 /* Estilos para el tamaño de las imágenes */
 .tool img {

@@ -9,11 +9,35 @@ import { Trapecio } from "./trapecio.js";
 import { Rectangulo } from "./rectangulo.js";
 import { Texto } from "./texto.js";
 
+// Manejo de errores para tipos de figuras desconocidos
+function manejarFiguraDesconocida(tipoFigura) {
+    console.error("Tipo de figura desconocido:", tipoFigura);
+}
+
+// Procesar una acción y devolver el resultado correspondiente
+function procesarAccion(action) {
+    if (action.tipo === "figure") {
+        const figura = action.dato;
+        if (!figura) {
+            manejarFiguraDesconocida(action.tipo);
+        }
+        return {
+            tipo: "figure",
+            dato: figura
+        };
+    }
+    // Si no es una figura, devolver la acción tal como está
+    return action;
+}
+
 class CanvasManager {
     constructor() {
         // Obtener contextos de las capas
-        this.layer1Ctx = document.getElementById("layer1Canvas").getContext("2d", { willReadFrequently: true });
-        this.layer2Ctx = document.getElementById("layer2Canvas").getContext("2d", { willReadFrequently: true });
+        this.layer = document.getElementById("CANVAS").getContext("2d", { willReadFrequently: true });
+
+        // Inicializar el canvas con un tamaño que ocupe toda la ventana
+        this.layer.canvas.width = window.innerWidth;
+        this.layer.canvas.height = window.innerHeight;
 
         // Otras propiedades y configuraciones necesarias
         this.modo = "";
@@ -27,36 +51,22 @@ class CanvasManager {
         this.currentCanvas = null;
         this.ladospoligono = 0;
         this.figuraSeleccionada = null;
-        this.setupCanvas();
+        this.setCurrentCanvas("CANVAS");
         this.setupListeners();
 
         this.history = new HistoryManager();
         this.figuras = [];
     }
-    setupCanvas() {
 
-        //Tamano de los canvas
-        this.layer1Ctx.canvas.width = 1024;
-        this.layer1Ctx.canvas.height = 768;
-        this.layer2Ctx.canvas.width = 1024;
-        this.layer2Ctx.canvas.height = 768;
-        // El canvas actual es el layer1 por defecto
-        this.setCurrentCanvas("layer2Canvas");
-
-    }
     setupListeners() {
        //MouseDown
         document.addEventListener("mousedown", this.mouseDown);
 
     }
     setCurrentCanvas(canvasId) {
-        // Establece el canvas actual en función del ID proporcionado
         this.currentCanvas = document.getElementById(canvasId);
-
-        // console.log(this.currentCanvas);
     }
     setDrawing(newDrawing) {
-        // Establece el estado del dibujo
         this.drawing = newDrawing;
     }
     setGridEnabled(newGridEnabled) {
@@ -80,6 +90,7 @@ class CanvasManager {
     }
     getCurrentCanvas() {
         // Devuelve el canvas actual
+        console.log(this.currentCanvas);
         return this.currentCanvas;
     }
     getDrawing() {
@@ -99,7 +110,6 @@ class CanvasManager {
 
     }
     getCurrentCanvasContext() {
-        //Obtener el context del canvas actual
         return this.currentCanvas.getContext("2d");
     }
     getCurrentLadospoligono(){
@@ -341,7 +351,7 @@ class CanvasManager {
     }
     drawPreview(start, end) {
         // Obtener el contexto del canvas actual
-        this.setCurrentCanvas("layer2Canvas");  
+        this.setCurrentCanvas("CANVAS");  
         const ctx = this.getCurrentCanvasContext();
         // // Limpiar el canvas
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -374,7 +384,7 @@ class CanvasManager {
     }   
 
     draw(start, end) {
-        this.setCurrentCanvas("layer1Canvas");
+        this.setCurrentCanvas("CANVAS");
         const ctx = this.getCurrentCanvasContext();
 
         if (this.modo === "linea") {
@@ -425,7 +435,7 @@ class CanvasManager {
         else if (this.modo === "borrar") {
             const ctx = this.getCurrentCanvasContext();
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); 
-            this.layer2Ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            this.layer.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             this.figuras = [];
             this.history.undoStack = [];
             this.history.redoStack = [];
@@ -490,11 +500,17 @@ class CanvasManager {
         console.log(this.figuraSeleccionada);
     }
 
+    preseleccionarFigura(coords){
+        // Obtener el contexto del canvas actual
+        const ctx = this.getCurrentCanvasContext();
+        // dibujar la misma figura con un resize
+    }
+
     limpiarCanvas(){
         //Limpiar el layer1 y 2
         const ctx = this.getCurrentCanvasContext();
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        this.layer2Ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        this.layer.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     }
 
     exportarArchivo() {
@@ -604,77 +620,22 @@ class CanvasManager {
     
         input.addEventListener('change', () => {
             const file = input.files[0];
-            const reader = new FileReader();
-    
-            reader.onload = () => {
-                const data = JSON.parse(reader.result);
-                this.history.undoStack = data.undoStack;
-                this.history.redoStack = data.redoStack.map(action => {
-                    // Mapear cada acción en redoStack
-                    if (action.tipo === "figure") {
-                        // Si es una figura, reconstruir la figura
-                        const figuraData = action.figura;
-                        const tipoFigura = figuraData.tipoFigura;
-                        const datos = figuraData.datos;
-    
-                        // Aquí debes manejar la reconstrucción de la figura según el tipoFigura y los datos proporcionados
-                        let figura;
-                        switch (tipoFigura) {
-                            case "Cuadrado":
-                                figura = new Cuadrado(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
-                                break;
-                            case "Circulo":
-                                figura = new Circulo(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
-                                break;
-                            case "Poligonos":
-                                figura = new Poligonos(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end, datos.lados);
-                                break;
-                            case "Elipse":
-                                figura = new Elipse(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
-                                break;
-                            case "Trapecio":
-                                figura = new Trapecio(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
-                                break;
-                            case "Rectangulo":
-                                figura = new Rectangulo(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
-                                break;
-                            case "Texto":
-                                //Arreglar texto
-                                figura = new Texto(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
-                                break;
-                            case "Linea":
-                                figura = new Linea(this.getCurrentCanvasContext(), datos.color, datos.grosor, datos.start, datos.end);
-                                break;
-                            case "Figura":
-                                figura = new Figura(this.getCurrentCanvasContext(), datos.color, datos.grosor);
-                                figura.puntos = datos.puntos;
-                                break;
-
-
-
-                            // Agrega más casos según los tipos de figura que tengas
-                            default:
-                                console.error("Tipo de figura desconocido:", tipoFigura);
-                                break;
-                        }
-    
-                        return {
-                            tipo: "figure",
-                            dato: figura
-                        };
-                    } else {
-                        // Si no es una figura, simplemente devolver la acción tal como está
-                        return action;
-                    }
-                });
-    
-                console.log(this.history.undoStack);
-                console.log(this.history.redoStack);
-                this.history.renderizar(this.getCurrentCanvasContext());
-            };
-    
-            reader.readAsText(file);
+            this.procesarHistorialYRenderizar(file);
         });
+    }
+
+    // Método para procesar el historial y renderizar el canvas
+    procesarHistorialYRenderizar(file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const acciones = JSON.parse(reader.result);
+            const accionesProcesadas = acciones.map(procesarAccion);
+
+            console.log(this.history.undoStack);
+            console.log(this.history.redoStack);
+            this.history.renderizar(this.getCurrentCanvasContext());
+        };
+        reader.readAsText(file);
     }
     
 }      
