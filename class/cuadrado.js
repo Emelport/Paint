@@ -1,85 +1,51 @@
 import { Figura } from './figuras.js';
 
 class Cuadrado extends Figura {
-  constructor(ctx, color, grosor, start, end) {
-    super(ctx, color, grosor);
-    this.start = start;
-    this.end = end;
-  }
-
-  draw() {
-    if (!this.isValidData()) return;
-
-    const { x, y, lado } = this.calculateSquare();
-    this.drawSquare(x, y, lado);
-    this.fillInnerPoints(x, y, lado);
-  }
-
-  isValidData() {
-    if (!this.ctx) {
-      console.error("El contexto del canvas no es válido.");
-      return false;
+    constructor(ctx, color, grosor, start, end) {
+        super(ctx, color, grosor);
+        // Recibe las esquinas del cuadrado
+        this.start = start;
+        this.end = end;
     }
 
-    if (
-      typeof this.start?.x !== "number" || // Uso de optional chaining para evitar errores si start es undefined
-      typeof this.start?.y !== "number" ||
-      typeof this.end?.x !== "number" ||
-      typeof this.end?.y !== "number"
-    ) {
-      console.error("Las coordenadas deben ser números.");
-      return false;
+    // Dibujar el cuadrado
+    draw() {
+        // Calcular las coordenadas del cuadrado
+        const minX = Math.min(this.start.x, this.end.x);
+        const minY = Math.min(this.start.y, this.end.y);
+        const maxX = Math.max(this.start.x, this.end.x);
+        const maxY = Math.max(this.start.y, this.end.y);
+        
+        // El lado del cuadrado debe ser el mayor de las diferencias entre las coordenadas
+        const lado = Math.max(maxX - minX, maxY - minY);
+
+        // Asegurarnos de que el cuadrado siempre tenga las dimensiones correctas (lado x lado)
+        const x = minX;
+        const y = minY;
+
+        // Dibujar el cuadrado
+        this.drawSquare(x, y, lado);
     }
 
-    return true;
-  }
-
-  calculateSquare() {
-    const x = this.start.x;
-    const y = this.start.y;
-    const lado = Math.max(
-      Math.abs(this.start.x - this.end.x),
-      Math.abs(this.start.y - this.end.y)
-    );
-
-    return { x, y, lado };
-  }
-
-  drawSquare(x, y, lado) {
-    for (let i = 0; i <= lado; i++) {
-      this.drawPixel(x + i, y); // Borde superior
-      this.drawPixel(x + i, y + lado); // Borde inferior
-      this.drawPixel(x, y + i); // Borde izquierdo
-      this.drawPixel(x + lado, y + i); // Borde derecho
-
-      // Guarda los puntos del borde
-      this.puntos.push(
-        { x: x + i, y: y }, 
-        { x: x + i, y: y + lado }, 
-        { x: x, y: y + i }, 
-        { x: x + lado, y: y + i }
-      );
+    drawSquare(x, y, lado) {
+        for (let i = x; i < x + lado; i++) {
+            for (let j = y; j < y + lado; j++) {
+                if (i === x || i === x + lado - 1 || j === y || j === y + lado - 1) {
+                    this.drawPixel(i, j);
+                    this.puntos.push({ x: i, y: j });
+                } else {
+                    this.puntosInternos.push({ x: i, y: j });
+                }
+            }
+        }
     }
-  }
 
-  fillInnerPoints(x, y, lado) {
-    this.puntosInternos = [];
-
-    for (let i = 1; i < lado; i++) {
-      for (let j = 1; j < lado; j++) {
-        this.puntosInternos.push({ x: x + i, y: y + j });
-      }
+    // Método para limpiar el cuadrado
+    clean() {
+        this.puntos.forEach(punto => {
+            this.borrarPixel(punto.x, punto.y);
+        });
     }
-  }
-
-  clean() {
-    [...this.puntos, ...this.puntosInternos].forEach(({ x, y }) => {
-      this.borrarPixel(x, y);
-    });
-
-    this.puntos = [];
-    this.puntosInternos = [];
-  }
 }
 
 export { Cuadrado };

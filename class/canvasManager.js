@@ -455,7 +455,6 @@ class CanvasManager {
                 // figuraSeleccionada.trasladarFigura(end.x - start.x, end.y - start.y);
                 this.history.trasladarFigura(start,end,figuraSeleccionada);
             } else if (this.modo === "rotar") {
-                // figuraSeleccionada.rotarFigura(10);
                 this.history.rotarFigura(figuraSeleccionada);
             }else if (this.modo === "escalar") {
                 this.history.escalarFigura(end,figuraSeleccionada);
@@ -473,11 +472,13 @@ class CanvasManager {
                 this.history.sacarFigura(figuraSeleccionada);
             }
             
-            this.history.renderizar(ctx);
                 
         } else {
             console.log("No hay figura seleccionada")
         }
+
+        this.history.renderizar(ctx);
+
     }
 
     lineTest(){

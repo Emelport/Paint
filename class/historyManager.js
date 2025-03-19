@@ -18,10 +18,6 @@ class HistoryManager {
                 break;
             }
         }
-
-        //Buscar la figura en la pila de acciones y verificar si se encuentra e imprimir que se eliminó
-        console.log("Se eliminó la figura", figura);
-        console.log(this.redoStack)
     }
 
 
@@ -174,9 +170,7 @@ class HistoryManager {
         // Seleccionar Figura
         let actionsRender = this.redoStack;
         let figuraSeleccionada = null;
-        
-        console.log(actionsRender)
-        console.log(this.undoStack)
+
         actionsRender.forEach(action => {
             if (action.tipo === "figure") {
                 // Verificar si las coordenadas del punto están dentro de la figura
@@ -190,6 +184,9 @@ class HistoryManager {
     }
     
     trasladarFigura(start, end, figuraSeleccionada){
+
+        //Si no hay figura seleccionada, no hacer nada
+        if (!figuraSeleccionada) return;
 
         // Hacer que se elimine la figura y redibuje en la nueva posición y se guarde en el historial en la misma posición
         this.sacarFigura(figuraSeleccionada);
@@ -205,17 +202,26 @@ class HistoryManager {
         
         // Redibujar la figura en la nueva posición
         figuraSeleccionada.puntosInternos = [];
+        figuraSeleccionada.puntos = [];
         figuraSeleccionada.draw();
     
         this.addActionToHistory(figuraSeleccionada,"figure");
     }
+
     rotarFigura(figuraSeleccionada) {
+
+        //Si no hay figura seleccionada, no hacer nada
+        if (!figuraSeleccionada) return;
+
         // Rotar de 10 en 10 grados
         const angulo = 10 * (Math.PI / 180); // Convertir a radianes
-    
+        const puntos = figuraSeleccionada.puntos;
+
         // Sacar figura
         this.sacarFigura(figuraSeleccionada);
+        
         figuraSeleccionada.puntosInternos = [];
+        figuraSeleccionada.puntos = [];
     
         // Arreglo para almacenar las coordenadas de los puntos del cuadrado
         let nuevosPuntos = [];
@@ -227,16 +233,16 @@ class HistoryManager {
         };
     
         // Rotar cada punto de la figura
-        for (let i = 0; i < figuraSeleccionada.puntos.length; i++) {
-            const punto = figuraSeleccionada.puntos[i];
+        for (let i = 0; i <puntos.length; i++) {
+            const punto =puntos[i];
             const x = punto.x - centro.x;
             const y = punto.y - centro.y;
-            const newX = centro.x + x * Math.cos(angulo) - y * Math.sin(.5);
-            const newY = centro.y + x * Math.sin(angulo) + y * Math.cos(.5);
+            const newX = centro.x + x * Math.cos(angulo) - y * Math.sin(angulo);
+            const newY = centro.y + x * Math.sin(angulo) + y * Math.cos(angulo);
             nuevosPuntos.push({ x: newX, y: newY });
         }
     
-        // Asignar las nuevas coordenadas al arreglo de puntos de la figura
+        // reemplazar las nuevas coordenadas al arreglo de puntos de la figura
         figuraSeleccionada.puntos = nuevosPuntos;
     
         // Redibujar la figura en la nueva posición
@@ -246,6 +252,8 @@ class HistoryManager {
     
     
     escalarFigura( end, figuraSeleccionada) {
+        //Si no hay figura seleccionada, no hacer nada
+        if (!figuraSeleccionada) return;
         // Sacar figura
         this.sacarFigura(figuraSeleccionada);
         figuraSeleccionada.end = end;
